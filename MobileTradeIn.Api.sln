@@ -1,0 +1,55 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.14.37314.3
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.Api", "MobileTradeIn.Api\MobileTradeIn.Api.csproj", "{31FD21F1-6623-48A8-BAF0-01045B31746A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.Domain", "MobileTradeIn.Domain\MobileTradeIn.Domain.csproj", "{DA839FEF-110C-4BED-92AC-5B0B8AA75675}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.Application", "MobileTradeIn.Application\MobileTradeIn.Application.csproj", "{B1978098-F9C7-4317-9D1F-5C0C1677D649}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.Infrastructure", "MobileTradeIn.Infrastructure\MobileTradeIn.Infrastructure.csproj", "{3D2B6B82-44E0-468C-A74D-C3BE3B9F314C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.ConcurrencyTest", "MobileTradeIn.ConcurrencyTest\MobileTradeIn.ConcurrencyTest.csproj", "{290C1C57-0216-4D1B-B7E6-A95D79D96073}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MobileTradeIn.Tests", "MobileTradeIn.Tests\MobileTradeIn.Tests.csproj", "{E3BDA9E0-9214-4B09-B16C-02B826001ABB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{31FD21F1-6623-48A8-BAF0-01045B31746A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{31FD21F1-6623-48A8-BAF0-01045B31746A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{31FD21F1-6623-48A8-BAF0-01045B31746A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{31FD21F1-6623-48A8-BAF0-01045B31746A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA839FEF-110C-4BED-92AC-5B0B8AA75675}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA839FEF-110C-4BED-92AC-5B0B8AA75675}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA839FEF-110C-4BED-92AC-5B0B8AA75675}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA839FEF-110C-4BED-92AC-5B0B8AA75675}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1978098-F9C7-4317-9D1F-5C0C1677D649}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1978098-F9C7-4317-9D1F-5C0C1677D649}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1978098-F9C7-4317-9D1F-5C0C1677D649}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1978098-F9C7-4317-9D1F-5C0C1677D649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3D2B6B82-44E0-468C-A74D-C3BE3B9F314C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3D2B6B82-44E0-468C-A74D-C3BE3B9F314C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3D2B6B82-44E0-468C-A74D-C3BE3B9F314C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3D2B6B82-44E0-468C-A74D-C3BE3B9F314C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{290C1C57-0216-4D1B-B7E6-A95D79D96073}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{290C1C57-0216-4D1B-B7E6-A95D79D96073}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{290C1C57-0216-4D1B-B7E6-A95D79D96073}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{290C1C57-0216-4D1B-B7E6-A95D79D96073}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E3BDA9E0-9214-4B09-B16C-02B826001ABB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E3BDA9E0-9214-4B09-B16C-02B826001ABB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E3BDA9E0-9214-4B09-B16C-02B826001ABB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E3BDA9E0-9214-4B09-B16C-02B826001ABB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {D8C34144-7D0A-48DD-AA7C-F5AD544E9477}
+	EndGlobalSection
+EndGlobal

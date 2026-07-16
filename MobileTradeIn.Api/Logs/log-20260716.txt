@@ -1,0 +1,66 @@
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/swagger-ui.css responded 304 in 9.8168 ms
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/index.css responded 304 in 9.8137 ms
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/swagger-ui-bundle.js responded 304 in 12.4056 ms
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/swagger-ui-standalone-preset.js responded 304 in 9.8240 ms
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/index.js responded 200 in 31.0532 ms
+[2026-07-16 15:52:16 INF] HTTP GET /swagger/v1/swagger.json responded 200 in 4.4829 ms
+[2026-07-16 15:52:52 WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+[2026-07-16 15:52:52 INF] Start creating TradeIn. CustomerId=3, ProductId=3
+[2026-07-16 15:52:52 INF] Executing stored procedure trs.spTradeIn_Create
+[2026-07-16 15:52:52 INF] Stored procedure trs.spTradeIn_Create executed successfully.
+[2026-07-16 15:52:52 INF] TradeIn created successfully.
+[2026-07-16 15:52:52 INF] HTTP POST /api/tradein responded 200 in 389.4007 ms
+[2026-07-16 15:53:01 INF] Start getting TradeIn. TradeInOfferId=26
+[2026-07-16 15:53:01 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-16 15:53:01 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-16 15:53:01 INF] TradeIn getting successfully. TradeInOfferId=26
+[2026-07-16 15:53:01 INF] HTTP GET /api/tradein/26 responded 200 in 46.8783 ms
+[2026-07-16 15:53:14 INF] Start creating TradeIn. CustomerId=2, ProductId=3
+[2026-07-16 15:53:14 INF] Executing stored procedure trs.spTradeIn_Create
+[2026-07-16 15:53:14 INF] Stored procedure trs.spTradeIn_Create executed successfully.
+[2026-07-16 15:53:14 INF] TradeIn created successfully.
+[2026-07-16 15:53:14 INF] HTTP POST /api/tradein responded 200 in 18.9856 ms
+[2026-07-16 15:53:19 INF] Start getting TradeIn. TradeInOfferId=27
+[2026-07-16 15:53:19 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-16 15:53:19 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-16 15:53:19 INF] TradeIn getting successfully. TradeInOfferId=27
+[2026-07-16 15:53:19 INF] HTTP GET /api/tradein/27 responded 200 in 6.8569 ms
+[2026-07-16 15:53:43 INF] Start confirming TradeIn. TradeInOfferId=27
+[2026-07-16 15:53:43 INF] Executing stored procedure trs.spTradeIn_Confirm
+[2026-07-16 15:53:43 INF] Stored procedure trs.spTradeIn_Confirm executed successfully.
+[2026-07-16 15:53:43 INF] Executing stored procedure trs.spTradeIn_GetEmail
+[2026-07-16 15:53:43 INF] Stored procedure trs.spTradeIn_GetEmail executed successfully.
+[2026-07-16 15:53:43 INF] Getting EmailTemplate. TemplateCode=TRADEIN_APPROVED
+[2026-07-16 15:53:43 INF] EmailTemplate query completed.
+[2026-07-16 15:53:43 ERR] Failed to send confirmation email to phatdat13.acc@gmail.com
+System.ArgumentNullException: Value cannot be null. (Parameter 'apiKey')
+   at SendGrid.SendGridClientOptions.set_ApiKey(String value)
+   at SendGrid.SendGridClient.buildOptions(String apiKey, String host, Dictionary`2 requestHeaders, String version, String urlPath, Boolean httpErrorAsException)
+   at SendGrid.SendGridClient..ctor(String apiKey, String host, Dictionary`2 requestHeaders, String version, String urlPath)
+   at MobileTradeIn.Infrastructure.Services.SendGridEmailService.SendEmailAsync(String toEmail, String subject, String htmlContent) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Infrastructure\Services\SendGridEmailService.cs:line 26
+   at MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn.ConfirmTradeInHandler.Handle(ConfirmTradeInCommand request, CancellationToken cancellationToken) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Application\Features\TradeIn\Commands\ConfirmTradeIn\ConfirmTradeInHandler.cs:line 92
+[2026-07-16 15:53:43 INF] Tradein confirmed successfully. TradeInOfferId=27
+[2026-07-16 15:53:43 INF] HTTP PATCH /api/tradein/confirm responded 200 in 277.6620 ms
+[2026-07-16 15:57:36 INF] HTTP GET /swagger/v1/swagger.json responded 200 in 6.0207 ms
+[2026-07-16 15:58:06 WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+[2026-07-16 15:58:06 INF] Start creating TradeIn. CustomerId=2, ProductId=5
+[2026-07-16 15:58:06 INF] Executing stored procedure trs.spTradeIn_Create
+[2026-07-16 15:58:06 INF] Stored procedure trs.spTradeIn_Create executed successfully.
+[2026-07-16 15:58:06 INF] TradeIn created successfully.
+[2026-07-16 15:58:06 INF] HTTP POST /api/tradein responded 200 in 312.1981 ms
+[2026-07-16 15:58:13 INF] Start getting TradeIn. TradeInOfferId=28
+[2026-07-16 15:58:13 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-16 15:58:18 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-16 15:58:18 INF] TradeIn getting successfully. TradeInOfferId=28
+[2026-07-16 15:58:18 INF] HTTP GET /api/tradein/28 responded 200 in 4540.6417 ms
+[2026-07-16 15:58:35 INF] Start confirming TradeIn. TradeInOfferId=28
+[2026-07-16 15:58:35 INF] Executing stored procedure trs.spTradeIn_Confirm
+[2026-07-16 15:58:35 INF] Stored procedure trs.spTradeIn_Confirm executed successfully.
+[2026-07-16 15:58:35 INF] Executing stored procedure trs.spTradeIn_GetEmail
+[2026-07-16 15:58:35 INF] Stored procedure trs.spTradeIn_GetEmail executed successfully.
+[2026-07-16 15:58:35 INF] Getting EmailTemplate. TemplateCode=TRADEIN_APPROVED
+[2026-07-16 15:58:35 INF] EmailTemplate query completed.
+[2026-07-16 15:58:36 INF] Email sent successfully to phatdat13.acc@gmail.com
+[2026-07-16 15:58:36 INF] Confirmation email sent to phatdat13.acc@gmail.com
+[2026-07-16 15:58:36 INF] Tradein confirmed successfully. TradeInOfferId=28
+[2026-07-16 15:58:36 INF] HTTP PATCH /api/tradein/confirm responded 200 in 1052.9077 ms
