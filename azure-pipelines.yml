@@ -1,26 +1,53 @@
+name: MobileTradeIn-$(Date:yyyyMMdd)-$(Rev:r)
+
 trigger:
-- main
+  branches:
+    include:
+      - main
+      - develop
+
+pr:
+  branches:
+    include:
+      - main
+      - develop
 
 pool:
   vmImage: windows-latest
 
 variables:
-  BuildConfiguration: Release
+- name: BuildConfiguration
+  value: Release
+
+- name: DotNetVersion
+  value: 9.0.x
 
 steps:
 
+# Install .NET SDK
 - task: UseDotNet@2
   displayName: Install .NET SDK
   inputs:
     packageType: sdk
-    version: 9.0.x
+    version: $(DotNetVersion)
 
+# Cache NuGet packages
+- task: Cache@2
+  displayName: Cache NuGet Packages
+  inputs:
+    key: 'nuget | "$(Agent.OS)" | **/packages.lock.json'
+    restoreKeys: |
+      nuget | "$(Agent.OS)"
+    path: $(NUGET_PACKAGES)
+
+# Restore
 - task: DotNetCoreCLI@2
   displayName: Restore
   inputs:
     command: restore
     projects: '**/*.sln'
 
+# Build
 - task: DotNetCoreCLI@2
   displayName: Build
   inputs:
@@ -28,8 +55,9 @@ steps:
     projects: '**/*.sln'
     arguments: '--configuration $(BuildConfiguration) --no-restore'
 
+# Unit Test
 - task: DotNetCoreCLI@2
-  displayName: Test
+  displayName: Run Unit Tests
   inputs:
     command: test
     projects: '**/*Tests/*.csproj'
@@ -39,21 +67,26 @@ steps:
       --logger trx
       --no-build
 
+# Publish Test Result
 - task: PublishTestResults@2
   displayName: Publish Test Results
+  condition: succeededOrFailed()
   inputs:
     testResultsFormat: VSTest
     testResultsFiles: '**/*.trx'
     failTaskOnFailedTests: true
 
+# Publish Coverage
 - task: PublishCodeCoverageResults@2
-  displayName: Publish Coverage
+  displayName: Publish Code Coverage
+  condition: succeededOrFailed()
   inputs:
     codeCoverageTool: Cobertura
     summaryFileLocation: '**/coverage.cobertura.xml'
 
+# Publish API
 - task: DotNetCoreCLI@2
-  displayName: Publish
+  displayName: Publish API
   inputs:
     command: publish
     publishWebProjects: true
@@ -61,8 +94,9 @@ steps:
       --configuration $(BuildConfiguration)
       --output $(Build.ArtifactStagingDirectory)
 
+# Publish Artifact
 - task: PublishBuildArtifacts@1
-  displayName: Publish Artifact
+  displayName: Publish Build Artifact
   inputs:
     PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: drop
+    ArtifactName: MobileTradeIn
