@@ -127,7 +127,8 @@ stages:
       displayName: Publish API
       inputs:
         command: publish
-        publishWebProjects: true
+        publishWebProjects: false
+        projects: '**/MobileTradeIn.Api.csproj'
         arguments: >
           --configuration $(BuildConfiguration)
           --output $(Build.ArtifactStagingDirectory)
