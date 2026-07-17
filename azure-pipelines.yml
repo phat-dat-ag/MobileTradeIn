@@ -44,6 +44,14 @@ stages:
         packageType: sdk
         version: $(DotNetVersion)
 
+    - task: AzureKeyVault@2
+      displayName: 'Download secrets from Azure Key Vault'
+      inputs:
+        azureSubscription: 'MobileTradeIn-ServiceConnection'
+        KeyVaultName: 'kv-mobiletradein-dev'
+        SecretsFilter: '*'
+        RunAsPreJob: true
+
     - task: DotNetCoreCLI@2
       displayName: Restore
       inputs:
