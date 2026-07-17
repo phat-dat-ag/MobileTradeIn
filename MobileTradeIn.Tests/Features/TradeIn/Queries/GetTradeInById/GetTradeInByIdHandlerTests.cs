@@ -32,7 +32,12 @@ namespace MobileTradeIn.Tests.Features.TradeIn.Queries.GetTradeInById
             var response = new TradeInDto
             {
                 TradeInOfferId = 1,
-                OfferAmount = 100000
+                OfferAmount = 100000,
+                IMEI = "1111111111",
+                OfferDate = DateTime.Now,
+                VoucherCode = "CODE",
+                OriginalAmount = 90000,
+                VoucherAmount = 10000,
             };
 
             _repositoryMock.Setup(x => x.GetTradeInByIdAsync(It.IsAny<int>())).ReturnsAsync(response);
