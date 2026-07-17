@@ -16,7 +16,6 @@ pool:
   vmImage: windows-latest
 
 variables:
-
 - group: MobileTradeIn-DEV
 
 - name: BuildConfiguration
@@ -25,72 +24,108 @@ variables:
 - name: DotNetVersion
   value: 9.0.x
 
-steps:
+stages:
 
-# Install .NET SDK
-- task: UseDotNet@2
-  displayName: Install .NET SDK
-  inputs:
-    packageType: sdk
-    version: $(DotNetVersion)
+#==========================
+# BUILD
+#==========================
+- stage: Build
+  displayName: Build Stage
 
-# Restore
-- task: DotNetCoreCLI@2
-  displayName: Restore
-  inputs:
-    command: restore
-    projects: '**/*.sln'
+  jobs:
 
-# Build
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: build
-    projects: '**/*.sln'
-    arguments: '--configuration $(BuildConfiguration) --no-restore'
+  - job: Build
 
-# Unit Test
-- task: DotNetCoreCLI@2
-  displayName: Run Unit Tests
-  inputs:
-    command: test
-    projects: '**/*Tests/*.csproj'
-    arguments: >
-      --configuration $(BuildConfiguration)
-      --collect:"XPlat Code Coverage"
-      --logger trx
-      --no-build
+    steps:
 
-# Publish Test Result
-- task: PublishTestResults@2
-  displayName: Publish Test Results
-  condition: succeededOrFailed()
-  inputs:
-    testResultsFormat: VSTest
-    testResultsFiles: '**/*.trx'
-    failTaskOnFailedTests: true
+    - task: UseDotNet@2
+      displayName: Install .NET SDK
+      inputs:
+        packageType: sdk
+        version: $(DotNetVersion)
 
-# Publish Coverage
-- task: PublishCodeCoverageResults@2
-  displayName: Publish Code Coverage
-  condition: succeededOrFailed()
-  inputs:
-    codeCoverageTool: Cobertura
-    summaryFileLocation: '**/coverage.cobertura.xml'
+    - task: DotNetCoreCLI@2
+      displayName: Restore
+      inputs:
+        command: restore
+        projects: '**/*.sln'
 
-# Publish API
-- task: DotNetCoreCLI@2
-  displayName: Publish API
-  inputs:
-    command: publish
-    publishWebProjects: true
-    arguments: >
-      --configuration $(BuildConfiguration)
-      --output $(Build.ArtifactStagingDirectory)
+    - task: DotNetCoreCLI@2
+      displayName: Build
+      inputs:
+        command: build
+        projects: '**/*.sln'
+        arguments: '--configuration $(BuildConfiguration) --no-restore'
 
-# Publish Artifact
-- task: PublishBuildArtifacts@1
-  displayName: Publish Build Artifact
-  inputs:
-    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
-    ArtifactName: MobileTradeIn
+#==========================
+# TEST
+#==========================
+- stage: Test
+  displayName: Test Stage
+
+  dependsOn: Build
+
+  jobs:
+
+  - job: Test
+
+    steps:
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: sdk
+        version: $(DotNetVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: Test
+      inputs:
+        command: test
+        projects: '**/*Tests/*.csproj'
+        arguments: >
+          --configuration $(BuildConfiguration)
+          --collect:"XPlat Code Coverage"
+          --logger trx
+
+    - task: PublishTestResults@2
+      inputs:
+        testResultsFormat: VSTest
+        testResultsFiles: '**/*.trx'
+
+    - task: PublishCodeCoverageResults@2
+      inputs:
+        codeCoverageTool: Cobertura
+        summaryFileLocation: '**/coverage.cobertura.xml'
+
+#==========================
+# PUBLISH
+#==========================
+- stage: Publish
+  displayName: Publish Stage
+
+  dependsOn: Test
+
+  jobs:
+
+  - job: Publish
+
+    steps:
+
+    - task: UseDotNet@2
+      inputs:
+        packageType: sdk
+        version: $(DotNetVersion)
+
+    - task: DotNetCoreCLI@2
+      displayName: Publish API
+      inputs:
+        command: publish
+        publishWebProjects: true
+        arguments: >
+          --configuration $(BuildConfiguration)
+          --output $(Build.ArtifactStagingDirectory)
+
+    - task: PublishBuildArtifacts@1
+      displayName: Publish Artifact
+      inputs:
+        PathtoPublish: $(Build.ArtifactStagingDirectory)
+        ArtifactName: MobileTradeIn
