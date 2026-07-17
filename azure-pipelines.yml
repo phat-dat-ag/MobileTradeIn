@@ -1,0 +1,68 @@
+trigger:
+- main
+
+pool:
+  vmImage: windows-latest
+
+variables:
+  BuildConfiguration: Release
+
+steps:
+
+- task: UseDotNet@2
+  displayName: Install .NET SDK
+  inputs:
+    packageType: sdk
+    version: 9.0.x
+
+- task: DotNetCoreCLI@2
+  displayName: Restore
+  inputs:
+    command: restore
+    projects: '**/*.sln'
+
+- task: DotNetCoreCLI@2
+  displayName: Build
+  inputs:
+    command: build
+    projects: '**/*.sln'
+    arguments: '--configuration $(BuildConfiguration) --no-restore'
+
+- task: DotNetCoreCLI@2
+  displayName: Test
+  inputs:
+    command: test
+    projects: '**/*Tests/*.csproj'
+    arguments: >
+      --configuration $(BuildConfiguration)
+      --collect:"XPlat Code Coverage"
+      --logger trx
+      --no-build
+
+- task: PublishTestResults@2
+  displayName: Publish Test Results
+  inputs:
+    testResultsFormat: VSTest
+    testResultsFiles: '**/*.trx'
+    failTaskOnFailedTests: true
+
+- task: PublishCodeCoverageResults@2
+  displayName: Publish Coverage
+  inputs:
+    codeCoverageTool: Cobertura
+    summaryFileLocation: '**/coverage.cobertura.xml'
+
+- task: DotNetCoreCLI@2
+  displayName: Publish
+  inputs:
+    command: publish
+    publishWebProjects: true
+    arguments: >
+      --configuration $(BuildConfiguration)
+      --output $(Build.ArtifactStagingDirectory)
+
+- task: PublishBuildArtifacts@1
+  displayName: Publish Artifact
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+    ArtifactName: drop
