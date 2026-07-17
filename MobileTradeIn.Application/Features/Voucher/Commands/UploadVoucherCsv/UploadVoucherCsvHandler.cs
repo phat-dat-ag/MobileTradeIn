@@ -1,5 +1,8 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
+using MobileTradeIn.Application.Common.Exceptions.Conflict;
+using MobileTradeIn.Application.Common.Exceptions.NotFound;
+using MobileTradeIn.Application.Common.Exceptions.Validation;
 using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
 
@@ -30,14 +33,14 @@ public class UploadVoucherCsvHandler
         {
             _logger.LogWarning("VoucherHeader {HeaderId} not found.", request.VoucherHeaderId);
 
-            throw new KeyNotFoundException("Voucher header not found.");
+            throw new VoucherHeaderNotFoundException();
         }
 
         if (request.Vouchers.Count == 0)
         {
             _logger.LogWarning("CSV contains no voucher.");
 
-            throw new ArgumentException("CSV contains no voucher.");
+            throw new NoVoucherException();
         }
 
         if (request.Vouchers.Count != header.Quantity)
@@ -47,8 +50,7 @@ public class UploadVoucherCsvHandler
                 header.Quantity,
                 request.Vouchers.Count);
 
-            throw new ArgumentException(
-                $"Expected {header.Quantity} vouchers but found {request.Vouchers.Count}.");
+            throw new VoucherCountMismatch(header.Quantity, request.Vouchers.Count);
         }
 
         var duplicateCodes = request.Vouchers
@@ -63,8 +65,7 @@ public class UploadVoucherCsvHandler
                 "Duplicate voucher codes found in CSV: {VoucherCodes}",
                 string.Join(", ", duplicateCodes));
 
-            throw new ArgumentException(
-                $"Duplicate voucher codes found in CSV: {string.Join(", ", duplicateCodes)}");
+            throw new DuplicateVoucherCodesException(string.Join(", ", duplicateCodes));
         }
 
         var existingCodes = await _repository.GetExistingVoucherCodesAsync(
@@ -78,8 +79,7 @@ public class UploadVoucherCsvHandler
                 "Voucher codes already exist: {VoucherCodes}",
                 string.Join(", ", existingCodes));
 
-            throw new ArgumentException(
-                $"Voucher codes already exist: {string.Join(", ", existingCodes)}");
+            throw new ExistingVoucherCodeException(string.Join(", ", existingCodes));
         }
 
         _logger.LogInformation(
