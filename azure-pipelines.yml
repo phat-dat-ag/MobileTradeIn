@@ -16,6 +16,9 @@ pool:
   vmImage: windows-latest
 
 variables:
+
+- group: MobileTradeIn-DEV
+
 - name: BuildConfiguration
   value: Release
 
