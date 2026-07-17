@@ -137,3 +137,39 @@ stages:
       inputs:
         targetPath: '$(Build.ArtifactStagingDirectory)'
         artifact: 'MobileTradeIn'
+
+#==========================
+# DEPLOY
+#==========================
+- stage: Deploy
+  displayName: Deploy Stage
+
+  dependsOn: Publish
+
+  jobs:
+
+  - deployment: DeployWebApp
+
+    displayName: Deploy to Azure App Service
+
+    environment: dev
+
+    strategy:
+
+      runOnce:
+
+        deploy:
+
+          steps:
+
+          - download: current
+            artifact: MobileTradeIn
+
+          - task: AzureWebApp@1
+            displayName: Deploy to Azure App Service
+
+            inputs:
+              azureSubscription: 'MobileTradeIn-ServiceConnection'
+              appType: webApp
+              appName: 'mobiletradein-api'
+              package: '$(Pipeline.Workspace)/MobileTradeIn/**/*.zip'
