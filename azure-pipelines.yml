@@ -132,8 +132,8 @@ stages:
           --configuration $(BuildConfiguration)
           --output $(Build.ArtifactStagingDirectory)
 
-    - task: PublishBuildArtifacts@1
-      displayName: Publish Artifact
+    - task: PublishPipelineArtifact@1
+      displayName: Publish Pipeline Artifact
       inputs:
-        PathtoPublish: $(Build.ArtifactStagingDirectory)
-        ArtifactName: MobileTradeIn
+        targetPath: '$(Build.ArtifactStagingDirectory)'
+        artifact: 'MobileTradeIn'
