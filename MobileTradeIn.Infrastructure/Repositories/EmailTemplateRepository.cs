@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.DTOs.Email;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Infrastructure.Persistence;
+using System.Data;
 
 namespace MobileTradeIn.Infrastructure.Repositories;
 
@@ -26,20 +27,12 @@ public class EmailTemplateRepository : IEmailTemplateRepository
             templateCode);
 
         var result = await connection.QueryFirstOrDefaultAsync<EmailTemplateDto>(
-            """
-            SELECT
-                TemplateCode,
-                Subject,
-                Content
-            FROM cnf.EmailTemplate
-            WHERE TemplateCode = @TemplateCode
-                AND IsActive = 1
-                AND IsDeleted = 0
-            """,
+            "cnf.spEmailTemplate_GetByTemplateCode",
             new
             {
                 TemplateCode = templateCode
-            });
+            },
+            commandType: CommandType.StoredProcedure);
 
         _logger.LogInformation(
             "EmailTemplate query completed.");
