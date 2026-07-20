@@ -23,8 +23,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository
         using var connection = _context.CreateConnection();
 
         _logger.LogInformation(
-            "Getting EmailTemplate. TemplateCode={TemplateCode}",
-            templateCode);
+            "Executing stored procedure cnf.spEmailTemplate_GetByTemplateCode");
 
         var result = await connection.QueryFirstOrDefaultAsync<EmailTemplateDto>(
             "cnf.spEmailTemplate_GetByTemplateCode",
@@ -34,8 +33,7 @@ public class EmailTemplateRepository : IEmailTemplateRepository
             },
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation(
-            "EmailTemplate query completed.");
+        _logger.LogInformation("Stored procedure cnf.spEmailTemplate_GetByTemplateCode executed successfully.");
 
         return result;
     }
