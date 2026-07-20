@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Application.Features.TradeIn.Commands.RejectTradeIn;
 
@@ -20,8 +21,10 @@ public class RejectTradeInHandler
     public async Task Handle(RejectTradeInCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Rejecting TradeIn. OfferId={OfferId}",
-            request.TradeInOfferId);
+             "Starting trade-in rejection. TradeInOfferId={TradeInOfferId}",
+             request.TradeInOfferId);
+
+        var stopwatch = Stopwatch.StartNew();
 
         await _repository.RejectTradeInAsync(
             new RejectTradeInRequest
@@ -31,8 +34,11 @@ public class RejectTradeInHandler
                 Notes = request.Notes
             });
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "TradeIn rejected successfully. OfferId={OfferId}",
+            "Trade-in rejection completed in {ElapsedMilliseconds} ms. TradeInOfferId={TradeInOfferId}",
+            stopwatch.ElapsedMilliseconds,
             request.TradeInOfferId);
     }
 }

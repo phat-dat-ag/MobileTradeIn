@@ -4,6 +4,7 @@ using MobileTradeIn.Application.Common.Exceptions.NotFound;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn;
 
@@ -35,8 +36,10 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-           "Start confirming TradeIn. TradeInOfferId={TradeInOfferId}",
-           request.TradeInOfferId);
+            "Starting trade-in confirmation. TradeInOfferId={TradeInOfferId}",
+            request.TradeInOfferId);
+
+        var stopwatch = Stopwatch.StartNew();
 
         await _repository.ConfirmTradeInAsync(
             new ConfirmTradeInRequest
@@ -46,8 +49,16 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
                 Notes = request.Notes
             });
 
+        _logger.LogInformation(
+            "Trade-in confirmed in database. TradeInOfferId={TradeInOfferId}",
+            request.TradeInOfferId);
+
         var emailInfo =
             await _repository.GetTradeInEmailAsync(request.TradeInOfferId);
+
+        _logger.LogInformation(
+            "Retrieved trade-in email information. TradeInOfferId={TradeInOfferId}",
+            request.TradeInOfferId);
 
         if (emailInfo == null)
         {
@@ -60,6 +71,10 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
 
         var template =
             await _emailTemplateRepository.GetEmailTemplateByTemplateCodeAsync("TRADEIN_APPROVED");
+
+        _logger.LogInformation(
+            "Loaded email template {TemplateCode}",
+            "TRADEIN_APPROVED");
 
         if (template == null)
         {
@@ -89,13 +104,19 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
 
         try
         {
+            _logger.LogInformation(
+                "Sending confirmation email. TradeInOfferId={TradeInOfferId}, CustomerEmail={CustomerEmail}",
+                request.TradeInOfferId,
+                emailInfo.CustomerEmail);
+
             await _emailService.SendEmailAsync(
                 emailInfo.CustomerEmail,
                 subject,
                 body);
 
             _logger.LogInformation(
-                "Confirmation email sent to {Email}",
+                "Confirmation email sent successfully. TradeInOfferId={TradeInOfferId}, CustomerEmail={CustomerEmail}",
+                request.TradeInOfferId,
                 emailInfo.CustomerEmail);
         }
         catch (Exception exception)
@@ -106,8 +127,11 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
                 emailInfo.CustomerEmail);
         }
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-           "Tradein confirmed successfully. TradeInOfferId={TradeInOfferId}",
-           request.TradeInOfferId);
+            "Trade-in confirmation completed in {ElapsedMilliseconds} ms. TradeInOfferId={TradeInOfferId}",
+            stopwatch.ElapsedMilliseconds,
+            request.TradeInOfferId);
     }
 }

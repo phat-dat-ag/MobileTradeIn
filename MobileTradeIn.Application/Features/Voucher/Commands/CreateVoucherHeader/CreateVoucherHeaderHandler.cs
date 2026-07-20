@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Application.Features.Voucher.Commands.CreateVoucherHeader;
 
@@ -23,9 +24,12 @@ public class CreateVoucherHeaderHandler
     {
 
         _logger.LogInformation(
-            "Creating voucher batch {BatchCode} for Product {ProductId}",
-            request.VoucherBatchCode,
-            request.ProductId);
+             "Starting voucher batch creation. VoucherBatchCode={VoucherBatchCode}, ProductId={ProductId}, Quantity={Quantity}",
+             request.VoucherBatchCode,
+             request.ProductId,
+             request.Quantity);
+
+        var stopwatch = Stopwatch.StartNew();
 
         var result = await _repository.CreateVoucherHeaderAsync(
             new CreateVoucherHeaderRequest
@@ -39,8 +43,11 @@ public class CreateVoucherHeaderHandler
                 CreatedBy = request.CreatedBy
             });
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "Voucher batch created successfully. HeaderId={HeaderId}",
+            "Voucher batch creation completed in {ElapsedMilliseconds} ms. VoucherHeaderId={VoucherHeaderId}",
+            stopwatch.ElapsedMilliseconds,
             result.VoucherHeaderId);
 
         return result;

@@ -3,6 +3,7 @@ using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.Common.Exceptions.Validation;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Application.Features.TradeIn.Commands.CreateTradeIn;
 
@@ -52,9 +53,11 @@ public class CreateTradeInHandler
         }
 
         _logger.LogInformation(
-            "Start creating TradeIn. CustomerId={CustomerId}, ProductId={ProductId}",
+            "Starting trade-in creation. CustomerId={CustomerId}, ProductId={ProductId}",
             request.CustomerId,
             request.ProductId);
+
+        var stopwatch = Stopwatch.StartNew();
 
         var result = await _repository.CreateTradeInAsync(
             new CreateTradeInRequest
@@ -67,8 +70,13 @@ public class CreateTradeInHandler
                 CreatedBy = request.CreatedBy
             });
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "TradeIn created successfully.");
+            "Trade-in creation completed in {ElapsedMilliseconds} ms. CustomerId={CustomerId}, ProductId={ProductId}",
+            stopwatch.ElapsedMilliseconds,
+            request.CustomerId,
+            request.ProductId);
 
         return result;
     }

@@ -2,6 +2,7 @@
 using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.DTOs.UploadFile;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Application.Features.UploadFile.Commands.CreateUploadFile;
 
@@ -24,8 +25,11 @@ public class CreateUploadFileHandler
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Creating upload file. File={FileName}",
-            request.FileName);
+            "Starting upload file creation. FileName={FileName}, FileType={FileType}",
+            request.FileName,
+            request.FileType);
+
+        var stopwatch = Stopwatch.StartNew();
 
         var result =
             await _repository.CreateUploadFileAsync(
@@ -37,8 +41,11 @@ public class CreateUploadFileHandler
                     UploadedBy = request.UploadedBy
                 });
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "UploadFile created successfully. Id={UploadFileId}",
+            "Upload file creation completed in {ElapsedMilliseconds} ms. UploadFileId={UploadFileId}",
+            stopwatch.ElapsedMilliseconds,
             result.UploadFileId);
 
         return result;
