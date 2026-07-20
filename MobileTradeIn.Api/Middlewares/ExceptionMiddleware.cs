@@ -1,5 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using System.Text.Json;
+using MobileTradeIn.Api.Common.Responses;
 
 namespace MobileTradeIn.Api.Middlewares;
 
@@ -68,20 +68,20 @@ public class ExceptionMiddleware
 
             default:
 
-                message = exception.Message;
+                message = "An unexpected error occurred.";
                 break;
         }
 
         context.Response.StatusCode = statusCode;
 
-        var response = new
+        var response = new ApiResponse<object>
         {
             Success = false,
-            StatusCode = statusCode,
-            Message = message
+            Message = message,
+            Data = null,
+            TraceId = context.TraceIdentifier
         };
 
-        await context.Response.WriteAsync(
-            JsonSerializer.Serialize(response));
+        await context.Response.WriteAsJsonAsync(response);
     }
 }

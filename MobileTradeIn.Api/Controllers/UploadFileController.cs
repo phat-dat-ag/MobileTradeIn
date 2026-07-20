@@ -6,7 +6,7 @@ namespace MobileTradeIn.Api.Controllers;
 
 [ApiController]
 [Route("api/upload-files")]
-public class UploadFileController : ControllerBase
+public class UploadFileController : BaseController
 {
     private readonly IMediator _mediator;
 
@@ -21,6 +21,6 @@ public class UploadFileController : ControllerBase
     {
         var result = await _mediator.Send(command);
 
-        return Ok(result);
+        return Success(result, "Upload file created successfully.");
     }
 }

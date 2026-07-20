@@ -9,7 +9,7 @@ namespace MobileTradeIn.Api.Controllers;
 
 [ApiController]
 [Route("api/tradein")]
-public class TradeInController : ControllerBase
+public class TradeInController : BaseController
 {
     private readonly IMediator _mediator;
 
@@ -23,7 +23,7 @@ public class TradeInController : ControllerBase
     {
         var result = await _mediator.Send(command);
 
-        return Ok(result);
+        return Success(result, "Trade-in request created successfully.");
     }
 
     [HttpPatch("confirm")]
@@ -31,10 +31,7 @@ public class TradeInController : ControllerBase
     {
         await _mediator.Send(command);
 
-        return Ok(new
-        {
-            Message = "Trade-in request confirmed successfully."
-        });
+        return Success("Trade-in request confirmed successfully.");
     }
 
     [HttpPatch("reject")]
@@ -42,10 +39,7 @@ public class TradeInController : ControllerBase
     {
         await _mediator.Send(command);
 
-        return Ok(new
-        {
-            Message = "Trade-in request rejected successfully."
-        });
+        return Success("Trade-in request rejected successfully.");
     }
 
     [HttpGet("{TradeInOfferId}")]
@@ -57,6 +51,6 @@ public class TradeInController : ControllerBase
                 TradeInOfferId = TradeInOfferId
             });
 
-        return Ok(result);
+        return Success(result, "Trade-in retrieved successfully.");
     }
 }

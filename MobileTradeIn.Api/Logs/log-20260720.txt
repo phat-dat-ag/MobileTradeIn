@@ -1,0 +1,86 @@
+[2026-07-20 10:49:43 INF] HTTP GET /swagger/v1/swagger.json responded 200 in 6.9254 ms
+[2026-07-20 10:49:51 WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+[2026-07-20 10:49:51 INF] Start getting TradeIn. TradeInOfferId=3
+[2026-07-20 10:49:51 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-20 10:49:51 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-20 10:49:51 INF] TradeIn getting successfully. TradeInOfferId=3
+[2026-07-20 10:49:51 INF] HTTP GET /api/tradein/3 responded 200 in 574.1832 ms
+[2026-07-20 11:11:36 INF] HTTP GET /swagger/index.html responded 200 in 28.7207 ms
+[2026-07-20 11:11:36 INF] HTTP GET /swagger/v1/swagger.json responded 200 in 4.2255 ms
+[2026-07-20 11:11:36 INF] HTTP GET /swagger/favicon-32x32.png responded 304 in 4.9749 ms
+[2026-07-20 11:11:52 WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+[2026-07-20 11:11:52 INF] Start getting TradeIn. TradeInOfferId=12
+[2026-07-20 11:11:52 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-20 11:11:52 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-20 11:11:52 INF] TradeIn getting successfully. TradeInOfferId=12
+[2026-07-20 11:11:52 INF] HTTP GET /api/tradein/12 responded 200 in 461.3767 ms
+[2026-07-20 11:12:01 INF] Start getting TradeIn. TradeInOfferId=1211
+[2026-07-20 11:12:01 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-20 11:12:01 ERR] Unhandled exception occurred. Path=/api/tradein/1211
+Microsoft.Data.SqlClient.SqlException (0x80131904): Trade-in offer not found.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__270_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at MobileTradeIn.Infrastructure.Repositories.TradeInRepository.GetTradeInByIdAsync(Int32 tradeInOfferId) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Infrastructure\Repositories\TradeInRepository.cs:line 93
+   at MobileTradeIn.Application.Features.TradeIn.Queries.GetTradeInById.GetTradeInByIdHandler.Handle(GetTradeInByIdQuery request, CancellationToken cancellationToken) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Application\Features\TradeIn\Queries\GetTradeInById\GetTradeInByIdHandler.cs:line 28
+   at MobileTradeIn.Api.Controllers.TradeInController.GetTradeInRequestById(Int32 TradeInOfferId) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Api\Controllers\TradeInController.cs:line 48
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at MobileTradeIn.Api.Middlewares.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Api\Middlewares\ExceptionMiddleware.cs:line 21
+ClientConnectionId:d4461807-d38b-4f05-9e8a-8a416fb594e5
+Error Number:50001,State:1,Class:16
+[2026-07-20 11:12:01 INF] HTTP GET /api/tradein/1211 responded 400 in 90.4504 ms
+[2026-07-20 11:17:41 INF] HTTP GET /swagger/index.html responded 200 in 28.2649 ms
+[2026-07-20 11:17:42 INF] HTTP GET /swagger/v1/swagger.json responded 200 in 8.5861 ms
+[2026-07-20 11:17:55 WRN] You do not have a valid license key for the Lucky Penny software MediatR. This is allowed for development and testing scenarios. If you are running in production you are required to have a licensed version. Please visit https://luckypennysoftware.com to obtain a valid license.
+[2026-07-20 11:17:55 INF] Start getting TradeIn. TradeInOfferId=12
+[2026-07-20 11:17:55 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-20 11:17:55 INF] Stored procedure trs.spTradeIn_GetById executed successfully.
+[2026-07-20 11:17:55 INF] TradeIn getting successfully. TradeInOfferId=12
+[2026-07-20 11:17:55 INF] HTTP GET /api/tradein/12 responded 200 in 466.8646 ms
+[2026-07-20 11:18:07 INF] Start getting TradeIn. TradeInOfferId=1233
+[2026-07-20 11:18:07 INF] Executing stored procedure trs.spTradeIn_GetById
+[2026-07-20 11:18:07 ERR] Unhandled exception occurred. Path=/api/tradein/1233
+Microsoft.Data.SqlClient.SqlException (0x80131904): Trade-in offer not found.
+   at Microsoft.Data.SqlClient.SqlCommand.<>c.<ExecuteDbDataReaderAsync>b__270_0(Task`1 result)
+   at System.Threading.Tasks.ContinuationResultTaskFromResultTask`2.InnerInvoke()
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+--- End of stack trace from previous location ---
+   at System.Threading.ExecutionContext.RunInternal(ExecutionContext executionContext, ContextCallback callback, Object state)
+   at System.Threading.Tasks.Task.ExecuteWithThreadLocal(Task& currentTaskSlot, Thread threadPoolThread)
+--- End of stack trace from previous location ---
+   at Dapper.SqlMapper.QueryRowAsync[T](IDbConnection cnn, Row row, Type effectiveType, CommandDefinition command) in /_/Dapper/SqlMapper.Async.cs:line 489
+   at MobileTradeIn.Infrastructure.Repositories.TradeInRepository.GetTradeInByIdAsync(Int32 tradeInOfferId) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Infrastructure\Repositories\TradeInRepository.cs:line 93
+   at MobileTradeIn.Application.Features.TradeIn.Queries.GetTradeInById.GetTradeInByIdHandler.Handle(GetTradeInByIdQuery request, CancellationToken cancellationToken) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Application\Features\TradeIn\Queries\GetTradeInById\GetTradeInByIdHandler.cs:line 28
+   at MobileTradeIn.Api.Controllers.TradeInController.GetTradeInRequestById(Int32 TradeInOfferId) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Api\Controllers\TradeInController.cs:line 48
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ActionMethodExecutor.TaskOfIActionResultExecutor.Execute(ActionContext actionContext, IActionResultTypeMapper mapper, ObjectMethodExecutor executor, Object controller, Object[] arguments)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeActionMethodAsync>g__Awaited|12_0(ControllerActionInvoker invoker, ValueTask`1 actionResultValueTask)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeNextActionFilterAsync>g__Awaited|10_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Rethrow(ActionExecutedContextSealed context)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.Next(State& next, Scope& scope, Object& state, Boolean& isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ControllerActionInvoker.<InvokeInnerFilterAsync>g__Awaited|13_0(ControllerActionInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeFilterPipelineAsync>g__Awaited|20_0(ResourceInvoker invoker, Task lastTask, State next, Scope scope, Object state, Boolean isCompleted)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Mvc.Infrastructure.ResourceInvoker.<InvokeAsync>g__Awaited|17_0(ResourceInvoker invoker, Task task, IDisposable scope)
+   at Microsoft.AspNetCore.Authorization.AuthorizationMiddleware.Invoke(HttpContext context)
+   at Swashbuckle.AspNetCore.SwaggerUI.SwaggerUIMiddleware.Invoke(HttpContext httpContext)
+   at Swashbuckle.AspNetCore.Swagger.SwaggerMiddleware.Invoke(HttpContext httpContext, ISwaggerProvider swaggerProvider)
+   at MobileTradeIn.Api.Middlewares.ExceptionMiddleware.InvokeAsync(HttpContext context) in C:\Users\DatNguyen\source\repos\MobileTradeIn.Api\MobileTradeIn.Api\Middlewares\ExceptionMiddleware.cs:line 21
+ClientConnectionId:901fc1fd-f4a0-4812-977c-78374102feb4
+Error Number:50001,State:1,Class:16
+[2026-07-20 11:18:07 INF] HTTP GET /api/tradein/1233 responded 400 in 151.1231 ms

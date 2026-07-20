@@ -9,7 +9,7 @@ namespace MobileTradeIn.Api.Controllers;
 
 [ApiController]
 [Route("api/vouchers")]
-public class VoucherController : ControllerBase
+public class VoucherController : BaseController
 {
     private readonly IMediator _mediator;
     private readonly ICsvService _csvService;
@@ -26,7 +26,7 @@ public class VoucherController : ControllerBase
     {
         var result = await _mediator.Send(command);
 
-        return Ok(result);
+        return Success(result, "VoucherHeader created successfully.");
     }
 
     [HttpPost("header/{headerId}/upload")]
@@ -49,6 +49,6 @@ public class VoucherController : ControllerBase
                 Vouchers = vouchers
             });
 
-        return Ok(result);
+        return Success(result, "Vouchers uploaded successfully");
     }
 }
