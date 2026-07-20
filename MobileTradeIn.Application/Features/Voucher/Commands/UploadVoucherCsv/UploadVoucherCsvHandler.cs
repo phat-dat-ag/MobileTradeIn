@@ -22,38 +22,43 @@ public class UploadVoucherCsvHandler
         _logger = logger;
     }
 
-    public async Task<UploadVoucherResponse> Handle(
-        UploadVoucherCsvCommand request,
-        CancellationToken cancellationToken)
+    private async Task<VoucherHeaderDto> GetAndValidateHeaderAsync(int voucherHeaderId)
     {
-
-        var header = await _repository.GetVoucherHeaderAsync(request.VoucherHeaderId);
+        var header = await _repository.GetVoucherHeaderAsync(voucherHeaderId);
 
         if (header == null)
         {
-            _logger.LogWarning("VoucherHeader {HeaderId} not found.", request.VoucherHeaderId);
+            _logger.LogWarning("VoucherHeader {HeaderId} not found.", voucherHeaderId);
 
             throw new VoucherHeaderNotFoundException();
         }
 
-        if (request.Vouchers.Count == 0)
+        return header;
+    }
+
+    private void ValidateVoucherCount(int requestVoucherCount, int headerVoucherQuantity)
+    {
+        if (requestVoucherCount == 0)
         {
             _logger.LogWarning("CSV contains no voucher.");
 
             throw new NoVoucherException();
         }
 
-        if (request.Vouchers.Count != header.Quantity)
+        if (requestVoucherCount != headerVoucherQuantity)
         {
             _logger.LogWarning(
                 "Voucher quantity mismatch. Expected={Expected}, Actual={Actual}",
-                header.Quantity,
-                request.Vouchers.Count);
+                headerVoucherQuantity,
+                requestVoucherCount);
 
-            throw new VoucherCountMismatch(header.Quantity, request.Vouchers.Count);
+            throw new VoucherCountMismatch(headerVoucherQuantity, requestVoucherCount);
         }
+    }
 
-        var duplicateCodes = request.Vouchers
+    private void ValidateDuplicateCodes(List<VoucherImportDto> vouchers)
+    {
+        var duplicateCodes = vouchers
             .GroupBy(req => req.VoucherCode.Trim().ToUpper())
             .Where(group => group.Count() > 1)
             .Select(group => group.Key)
@@ -67,9 +72,12 @@ public class UploadVoucherCsvHandler
 
             throw new DuplicateVoucherCodesException(string.Join(", ", duplicateCodes));
         }
+    }
 
+    private async Task ValidateExistingCodes(List<VoucherImportDto> vouchers)
+    {
         var existingCodes = await _repository.GetExistingVoucherCodesAsync(
-            request.Vouchers
+           vouchers
                 .Select(req => req.VoucherCode)
                 .ToList());
 
@@ -81,17 +89,15 @@ public class UploadVoucherCsvHandler
 
             throw new ExistingVoucherCodeException(string.Join(", ", existingCodes));
         }
+    }
 
-        _logger.LogInformation(
-            "Start importing {Count} vouchers. HeaderId={HeaderId}",
-            request.Vouchers.Count,
-            request.VoucherHeaderId);
+    private async Task<int> ImportVouchersAsync(List<VoucherImportDto> vouchers)
+    {
+        int importedCount = 0;
 
-        int success = 0;
-
-        foreach (var batch in request.Vouchers.Chunk(500))
+        foreach (var batch in vouchers.Chunk(500))
         {
-            success += await _repository.BulkInsertVoucherAsync(
+            importedCount += await _repository.BulkInsertVoucherAsync(
                 batch.ToList());
 
             _logger.LogInformation(
@@ -99,29 +105,57 @@ public class UploadVoucherCsvHandler
                 batch.Count());
         }
 
+        return importedCount;
+    }
+
+    private async Task UpdateImportResultAsync(UploadVoucherCsvCommand request, int importedCount)
+    {
         await _repository.UpdateUploadFileResultAsync(
             request.UploadField,
             request.Vouchers.Count,
-            success,
-            request.Vouchers.Count - success,
+            importedCount,
+            request.Vouchers.Count - importedCount,
             "Voucher import completed successfully.",
             request.UploadedBy);
 
         await _repository.MarkVoucherHeaderProcessedAsync(
             request.VoucherHeaderId,
             request.UploadedBy);
+    }
+
+    public async Task<UploadVoucherResponse> Handle(
+        UploadVoucherCsvCommand request,
+        CancellationToken cancellationToken)
+    {
+
+        var header = await GetAndValidateHeaderAsync(request.VoucherHeaderId);
+
+        ValidateVoucherCount(request.Vouchers.Count, header.Quantity);
+
+        ValidateDuplicateCodes(request.Vouchers);
+
+        await ValidateExistingCodes(request.Vouchers);
+
+        _logger.LogInformation(
+            "Start importing {Count} vouchers. HeaderId={HeaderId}",
+            request.Vouchers.Count,
+            request.VoucherHeaderId);
+
+        var importedCount = await ImportVouchersAsync(request.Vouchers);
+
+        await UpdateImportResultAsync(request, importedCount);
 
         _logger.LogInformation(
             "Voucher import completed. Total={Total}, Success={Success}, Failed={Failed}",
             request.Vouchers.Count,
-            success,
-            request.Vouchers.Count - success);
+            importedCount,
+            request.Vouchers.Count - importedCount);
 
         return new UploadVoucherResponse
         {
             TotalRecords = request.Vouchers.Count,
-            SuccessRecords = success,
-            FailedRecords = request.Vouchers.Count - success,
+            SuccessRecords = importedCount,
+            FailedRecords = request.Vouchers.Count - importedCount,
             Message = "Voucher import completed successfully."
         };
     }
