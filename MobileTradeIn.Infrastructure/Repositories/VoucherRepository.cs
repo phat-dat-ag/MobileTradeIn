@@ -169,24 +169,15 @@ public class VoucherRepository : IVoucherRepository
     {
         using var connection = _context.CreateConnection();
 
-        const string sql =
-            """
-                SELECT
-                    VoucherHeaderId,
-                    Quantity
-                FROM mdm.VoucherHeader
-                WHERE VoucherHeaderId=@VoucherHeaderId
-                    AND IsDeleted=0;
-            """;
-
         _logger.LogInformation("Executing querying voucher header voucherHeaderId = {voucherHeaderId}.", voucherHeaderId);
 
         var result = await connection.QueryFirstOrDefaultAsync<VoucherHeaderDto>(
-            sql,
+            "mdm.spVoucherHeader_GetById",
             new
             {
                 VoucherHeaderId = voucherHeaderId
-            });
+            },
+            commandType: CommandType.StoredProcedure);
 
         _logger.LogInformation("Executing querying voucher header voucherHeaderId = {voucherHeaderId} successfully.", voucherHeaderId);
 
@@ -197,19 +188,24 @@ public class VoucherRepository : IVoucherRepository
     {
         using var connection = _context.CreateConnection();
 
-        const string sql = """
-                                SELECT VoucherCode
-                                FROM mdm.VoucherDetail
-                                WHERE VoucherCode IN @VoucherCodes
-                                  AND IsDeleted = 0;
-                            """;
+        var table = new DataTable();
+        table.Columns.Add("VoucherCode", typeof(string));
+
+        foreach (var code in voucherCodes)
+        {
+            table.Rows.Add(code);
+        }
+
+        var parameters = new DynamicParameters();
+
+        parameters.Add(
+            "@VoucherCodes",
+            table.AsTableValuedParameter("mdm.VoucherCodeList"));
 
         var result = await connection.QueryAsync<string>(
-            sql,
-            new
-            {
-                VoucherCodes = voucherCodes
-            });
+            "mdm.spVoucher_GetExistingCodes",
+            parameters,
+            commandType: CommandType.StoredProcedure);
 
         return result.ToList();
     }
