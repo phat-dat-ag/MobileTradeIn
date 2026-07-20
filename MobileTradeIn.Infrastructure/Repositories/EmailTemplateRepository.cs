@@ -4,6 +4,7 @@ using MobileTradeIn.Application.DTOs.Email;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Infrastructure.Persistence;
 using System.Data;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Infrastructure.Repositories;
 
@@ -20,20 +21,32 @@ public class EmailTemplateRepository : IEmailTemplateRepository
 
     public async Task<EmailTemplateDto?> GetEmailTemplateByTemplateCodeAsync(string templateCode)
     {
+        const string storedProcedure = "cnf.spEmailTemplate_GetByTemplateCode";
+
         using var connection = _context.CreateConnection();
 
+        var stopwatch = Stopwatch.StartNew();
+
         _logger.LogInformation(
-            "Executing stored procedure cnf.spEmailTemplate_GetByTemplateCode");
+           "Executing stored procedure {StoredProcedure} with TemplateCode={TemplateCode}",
+           storedProcedure,
+           templateCode);
 
         var result = await connection.QueryFirstOrDefaultAsync<EmailTemplateDto>(
-            "cnf.spEmailTemplate_GetByTemplateCode",
+            storedProcedure,
             new
             {
                 TemplateCode = templateCode
             },
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure cnf.spEmailTemplate_GetByTemplateCode executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+           "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TemplateFound={TemplateFound}",
+           storedProcedure,
+           stopwatch.ElapsedMilliseconds,
+           result is not null);
 
         return result;
     }

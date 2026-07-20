@@ -5,6 +5,7 @@ using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Infrastructure.Persistence;
 using System.Data;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Infrastructure.Repositories;
 
@@ -21,7 +22,11 @@ public class TradeInRepository : ITradeInRepository
 
     public async Task<CreateTradeInResponse> CreateTradeInAsync(CreateTradeInRequest request)
     {
+        const string storedProcedure = "trs.spTradeIn_Create";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -32,21 +37,34 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@VoucherCode", request.VoucherCode);
         parameters.Add("@CreatedBy", request.CreatedBy);
 
-        _logger.LogInformation("Executing stored procedure trs.spTradeIn_Create");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. CustomerId={CustomerId}, ProductId={ProductId}",
+            storedProcedure,
+            request.CustomerId,
+            request.ProductId);
 
         var result = await connection.QueryFirstAsync<CreateTradeInResponse>(
-            "trs.spTradeIn_Create",
+           storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure trs.spTradeIn_Create executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }
 
     public async Task ConfirmTradeInAsync(ConfirmTradeInRequest request)
     {
+        const string storedProcedure = "trs.spTradeIn_Confirm";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -54,19 +72,31 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@ConfirmedBy", request.ConfirmedBy);
         parameters.Add("@Notes", request.Notes);
 
-        _logger.LogInformation("Executing stored procedure trs.spTradeIn_Confirm");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            storedProcedure,
+            request.TradeInOfferId);
 
         await connection.ExecuteAsync(
-            "trs.spTradeIn_Confirm",
+           storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure trs.spTradeIn_Confirm executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
     }
 
     public async Task RejectTradeInAsync(RejectTradeInRequest request)
     {
+        const string storedProcedure = "trs.spTradeIn_Reject";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -74,49 +104,84 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@RejectedBy", request.RejectedBy);
         parameters.Add("@Notes", request.Notes);
 
-        _logger.LogInformation("Executing stored procedure trs.spTradeIn_Reject");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            storedProcedure,
+            request.TradeInOfferId);
 
         await connection.ExecuteAsync(
-            "trs.spTradeIn_Reject",
+           storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure trs.spTradeIn_Reject executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
     }
 
     public async Task<TradeInDto?> GetTradeInByIdAsync(int tradeInOfferId)
     {
+        const string storedProcedure = "trs.spTradeIn_GetById";
+
         using var connection = _context.CreateConnection();
 
-        _logger.LogInformation("Executing stored procedure trs.spTradeIn_GetById");
+        var stopwatch = Stopwatch.StartNew();
+
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            storedProcedure,
+            tradeInOfferId);
+
 
         var result = await connection.QueryFirstOrDefaultAsync<TradeInDto>(
-            "trs.spTradeIn_GetById",
+            storedProcedure,
             new
             { tradeInOfferId = tradeInOfferId },
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure trs.spTradeIn_GetById executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TradeInFound={TradeInFound}",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds,
+            result is not null);
+
 
         return result;
     }
 
     public async Task<TradeInEmailDto?> GetTradeInEmailAsync(int tradeInOfferId)
     {
+        const string storedProcedure = "trs.spTradeIn_GetEmail";
+
         using var connection = _context.CreateConnection();
 
-        _logger.LogInformation("Executing stored procedure trs.spTradeIn_GetEmail");
+        var stopwatch = Stopwatch.StartNew();
+
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            storedProcedure,
+            tradeInOfferId);
 
         var result = await connection.QueryFirstOrDefaultAsync<TradeInEmailDto>(
-                "trs.spTradeIn_GetEmail",
+                storedProcedure,
                 new
                 {
                     TradeInOfferId = tradeInOfferId
                 },
                commandType: CommandType.StoredProcedure);
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "Stored procedure trs.spTradeIn_GetEmail executed successfully.");
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. EmailDataFound={EmailDataFound}",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds,
+            result is not null);
 
         return result;
     }

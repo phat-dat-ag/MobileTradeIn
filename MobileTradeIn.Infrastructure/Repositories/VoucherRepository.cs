@@ -5,6 +5,7 @@ using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Infrastructure.Persistence;
 using System.Data;
+using System.Diagnostics;
 
 namespace MobileTradeIn.Infrastructure.Repositories;
 
@@ -22,7 +23,11 @@ public class VoucherRepository : IVoucherRepository
     public async Task<CreateUploadFileResponse> CreateUploadFileAsync(
         CreateUploadFileRequest request)
     {
+        const string storedProcedure = "trs.spUploadFile_Create";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -31,15 +36,24 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@FileType", request.FileType);
         parameters.Add("@UploadedBy", request.UploadedBy);
 
-        _logger.LogInformation("Executing stored procedure trs.spUploadFile_Create");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. FileName={FileName}, FileType={FileType}",
+            storedProcedure,
+            request.FileName,
+            request.FileType);
 
         var result =
             await connection.QueryFirstAsync<CreateUploadFileResponse>(
-                "trs.spUploadFile_Create",
+                storedProcedure,
                 parameters,
                 commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure trs.spUploadFile_Create executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }
@@ -47,7 +61,11 @@ public class VoucherRepository : IVoucherRepository
     public async Task<CreateVoucherHeaderResponse> CreateVoucherHeaderAsync(
         CreateVoucherHeaderRequest request)
     {
+        const string storedProcedure = "mdm.spVoucherHeader_Create";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -59,21 +77,36 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@Description", request.Description);
         parameters.Add("@CreatedBy", request.CreatedBy);
 
-        _logger.LogInformation("Executing stored procedure mdm.spVoucherHeader_Create");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. UploadFileId={UploadFileId}, ProductId={ProductId}, Quantity={Quantity}",
+            storedProcedure,
+            request.UploadFileId,
+            request.ProductId,
+            request.Quantity);
+
 
         var result = await connection.QueryFirstAsync<CreateVoucherHeaderResponse>(
-            "mdm.spVoucherHeader_Create",
+            storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure mdm.spVoucherHeader_Create executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }
 
     public async Task<int> BulkInsertVoucherAsync(List<VoucherImportDto> vouchers)
     {
+        const string storedProcedure = "mdm.spVoucher_BulkInsert";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var table = new DataTable();
 
@@ -101,14 +134,23 @@ public class VoucherRepository : IVoucherRepository
             "@VoucherList",
             table.AsTableValuedParameter("mdm.VoucherImportType"));
 
-        _logger.LogInformation("Executing stored procedure mdm.spVoucher_BulkInsert");
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. VoucherCount={VoucherCount}",
+            storedProcedure,
+            vouchers.Count);
 
         var result = await connection.QueryFirstAsync<BulkInsertResponse>(
-            "mdm.spVoucher_BulkInsert",
+            storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Stored procedure mdm.spVoucher_BulkInsert executed successfully.");
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TotalInserted={TotalInserted}",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds,
+            result.TotalInserted);
 
         return result.TotalInserted;
     }
@@ -121,10 +163,11 @@ public class VoucherRepository : IVoucherRepository
         string response,
         string updatedBy)
     {
+        const string storedProcedure = "trs.spUploadFile_UpdateResult";
+
         using var connection = _context.CreateConnection();
 
-        _logger.LogInformation(
-            "Executing stored procedure trs.spUploadFile_UpdateResult");
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
@@ -135,58 +178,97 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@Response", response);
         parameters.Add("@UpdatedBy", updatedBy);
 
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. UploadFileId={UploadFileId}, TotalRecords={TotalRecords}, SuccessRecords={SuccessRecords}, FailedRecords={FailedRecords}",
+            storedProcedure,
+            uploadFileId,
+            totalRecords,
+            successRecords,
+            failedRecords);
+
         await connection.ExecuteAsync(
-            "trs.spUploadFile_UpdateResult",
+            storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "Stored procedure trs.spUploadFile_UpdateResult executed successfully.");
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
     }
 
     public async Task MarkVoucherHeaderProcessedAsync(int voucherHeaderId, string updatedBy)
     {
+        const string storedProcedure = "mdm.spVoucherHeader_MarkProcessed";
+
         using var connection = _context.CreateConnection();
 
-        _logger.LogInformation(
-            "Executing stored procedure mdm.spVoucherHeader_MarkProcessed");
+        var stopwatch = Stopwatch.StartNew();
 
         var parameters = new DynamicParameters();
 
         parameters.Add("@VoucherHeaderId", voucherHeaderId);
         parameters.Add("@UpdatedBy", updatedBy);
 
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
+            storedProcedure,
+            voucherHeaderId);
+
         await connection.ExecuteAsync(
-            "mdm.spVoucherHeader_MarkProcessed",
+            storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
+        stopwatch.Stop();
+
         _logger.LogInformation(
-            "Stored procedure mdm.spVoucherHeader_MarkProcessed executed successfully.");
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds);
     }
 
     public async Task<VoucherHeaderDto?> GetVoucherHeaderAsync(int voucherHeaderId)
     {
+        const string storedProcedure = "mdm.spVoucherHeader_GetById";
+
         using var connection = _context.CreateConnection();
 
-        _logger.LogInformation("Executing querying voucher header voucherHeaderId = {voucherHeaderId}.", voucherHeaderId);
+        var stopwatch = Stopwatch.StartNew();
+
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
+            storedProcedure,
+            voucherHeaderId);
 
         var result = await connection.QueryFirstOrDefaultAsync<VoucherHeaderDto>(
-            "mdm.spVoucherHeader_GetById",
+            storedProcedure,
             new
             {
                 VoucherHeaderId = voucherHeaderId
             },
             commandType: CommandType.StoredProcedure);
 
-        _logger.LogInformation("Executing querying voucher header voucherHeaderId = {voucherHeaderId} successfully.", voucherHeaderId);
+        stopwatch.Stop();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. VoucherHeaderFound={VoucherHeaderFound}",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds,
+            result is not null);
 
         return result;
     }
 
     public async Task<List<string>> GetExistingVoucherCodesAsync(List<string> voucherCodes)
     {
+        const string storedProcedure = "mdm.spVoucher_GetExistingCodes";
+
         using var connection = _context.CreateConnection();
+
+        var stopwatch = Stopwatch.StartNew();
 
         var table = new DataTable();
         table.Columns.Add("VoucherCode", typeof(string));
@@ -202,11 +284,26 @@ public class VoucherRepository : IVoucherRepository
             "@VoucherCodes",
             table.AsTableValuedParameter("mdm.VoucherCodeList"));
 
+        _logger.LogInformation(
+            "Executing stored procedure {StoredProcedure}. VoucherCodeCount={VoucherCodeCount}",
+            storedProcedure,
+            voucherCodes.Count);
+
         var result = await connection.QueryAsync<string>(
-            "mdm.spVoucher_GetExistingCodes",
+            storedProcedure,
             parameters,
             commandType: CommandType.StoredProcedure);
 
-        return result.ToList();
+        stopwatch.Stop();
+
+        var existingVoucherCodes = result.ToList();
+
+        _logger.LogInformation(
+            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. ExistingVoucherCount={ExistingVoucherCount}",
+            storedProcedure,
+            stopwatch.ElapsedMilliseconds,
+            existingVoucherCodes.Count);
+
+        return existingVoucherCodes;
     }
 }
