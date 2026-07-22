@@ -1,5 +1,6 @@
 ﻿using Microsoft.Data.SqlClient;
 using MobileTradeIn.Api.Common.Responses;
+using MobileTradeIn.Application.Common.Exceptions.Business;
 
 namespace MobileTradeIn.Api.Middlewares;
 
@@ -42,6 +43,12 @@ public class ExceptionMiddleware
 
         switch (exception)
         {
+            case BusinessException businessEx:
+
+                statusCode = StatusCodes.Status404NotFound;
+                message = businessEx.Message;
+                break;
+
             case SqlException sqlEx when sqlEx.Number is 50004 or 50005:
 
                 statusCode = StatusCodes.Status409Conflict;
