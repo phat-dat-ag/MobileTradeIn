@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using MobileTradeIn.Api.Common.Responses;
+using MobileTradeIn.Api.Constants;
 
 namespace MobileTradeIn.Api.Controllers;
 
@@ -13,6 +14,7 @@ public abstract class BaseController : ControllerBase
             Success = true,
             Message = message,
             TraceId = HttpContext.TraceIdentifier,
+            CorrelationId = HttpContext.Items[HttpContextKeys.CorrelationId]?.ToString(),
             Data = data
         });
     }
@@ -24,6 +26,7 @@ public abstract class BaseController : ControllerBase
             Success = true,
             Message = message,
             TraceId = HttpContext.TraceIdentifier,
+            CorrelationId = HttpContext.Items[HttpContextKeys.CorrelationId]?.ToString(),
             Data = null
         });
     }

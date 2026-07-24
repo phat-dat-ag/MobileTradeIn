@@ -23,6 +23,11 @@ public class SendGridEmailService : IEmailService
         string subject,
         string htmlContent)
     {
+        _logger.LogInformation(
+            "Service Started. Operation={Operation}. Recipient={Recipient}",
+            "SendEmail",
+            toEmail);
+
         var client = new SendGridClient(_options.ApiKey);
 
         var from = new EmailAddress(_options.FromEmail, _options.FromName);
@@ -43,7 +48,9 @@ public class SendGridEmailService : IEmailService
             var error = await response.Body.ReadAsStringAsync();
 
             _logger.LogError(
-                "Failed to send email. Status={StatusCode}, Error={Error}",
+                "Service Failed. Operation={Operation}. Recipient={Recipient}. StatusCode={StatusCode}. Error={Error}",
+                "SendEmail",
+                toEmail,
                 response.StatusCode,
                 error);
 
@@ -51,7 +58,8 @@ public class SendGridEmailService : IEmailService
         }
 
         _logger.LogInformation(
-            "Email sent successfully to {Email}",
+            "Service Completed. Operation={Operation}. Recipient={Recipient}",
+            "SendEmail",
             toEmail);
     }
 }

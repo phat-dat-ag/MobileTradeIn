@@ -11,4 +11,6 @@ public class ApiResponse<T>
     public DateTimeOffset Timestamp { get; init; } = DateTimeOffset.UtcNow;
 
     public string? TraceId { get; init; }
+
+    public string? CorrelationId { get; init; }
 }

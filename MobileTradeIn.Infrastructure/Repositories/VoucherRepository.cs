@@ -37,7 +37,7 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@UploadedBy", request.UploadedBy);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. FileName={FileName}, FileType={FileType}",
+            "Database Started. StoredProcedure={StoredProcedure}. FileName={FileName}. FileType={FileType}",
             storedProcedure,
             request.FileName,
             request.FileType);
@@ -51,7 +51,7 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
 
@@ -78,7 +78,7 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@CreatedBy", request.CreatedBy);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. UploadFileId={UploadFileId}, ProductId={ProductId}, Quantity={Quantity}",
+            "Database Started. StoredProcedure={StoredProcedure}. UploadFileId={UploadFileId}. ProductId={ProductId}. Quantity={Quantity}",
             storedProcedure,
             request.UploadFileId,
             request.ProductId,
@@ -93,7 +93,7 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
 
@@ -135,7 +135,7 @@ public class VoucherRepository : IVoucherRepository
             table.AsTableValuedParameter("mdm.VoucherImportType"));
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. VoucherCount={VoucherCount}",
+            "Database Started. StoredProcedure={StoredProcedure}. VoucherCount={VoucherCount}",
             storedProcedure,
             vouchers.Count);
 
@@ -147,10 +147,10 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TotalInserted={TotalInserted}",
+            "Database Completed. StoredProcedure={StoredProcedure}. TotalInserted={TotalInserted}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
-            stopwatch.ElapsedMilliseconds,
-            result.TotalInserted);
+            result.TotalInserted,
+            stopwatch.ElapsedMilliseconds);
 
         return result.TotalInserted;
     }
@@ -179,7 +179,7 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@UpdatedBy", updatedBy);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. UploadFileId={UploadFileId}, TotalRecords={TotalRecords}, SuccessRecords={SuccessRecords}, FailedRecords={FailedRecords}",
+            "Database Started. StoredProcedure={StoredProcedure}. UploadFileId={UploadFileId}. TotalRecords={TotalRecords}. SuccessRecords={SuccessRecords}. FailedRecords={FailedRecords}",
             storedProcedure,
             uploadFileId,
             totalRecords,
@@ -194,7 +194,7 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
     }
@@ -213,7 +213,7 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@UpdatedBy", updatedBy);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
+            "Database Started. StoredProcedure={StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
             storedProcedure,
             voucherHeaderId);
 
@@ -225,7 +225,7 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
     }
@@ -239,7 +239,7 @@ public class VoucherRepository : IVoucherRepository
         var stopwatch = Stopwatch.StartNew();
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
+            "Database Started. StoredProcedure={StoredProcedure}. VoucherHeaderId={VoucherHeaderId}",
             storedProcedure,
             voucherHeaderId);
 
@@ -254,10 +254,10 @@ public class VoucherRepository : IVoucherRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. VoucherHeaderFound={VoucherHeaderFound}",
+            "Database Completed. StoredProcedure={StoredProcedure}. VoucherHeaderFound={VoucherHeaderFound}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
-            stopwatch.ElapsedMilliseconds,
-            result is not null);
+            result is not null,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }
@@ -285,7 +285,7 @@ public class VoucherRepository : IVoucherRepository
             table.AsTableValuedParameter("mdm.VoucherCodeList"));
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. VoucherCodeCount={VoucherCodeCount}",
+            "Database Started. StoredProcedure={StoredProcedure}. VoucherCodeCount={VoucherCodeCount}",
             storedProcedure,
             voucherCodes.Count);
 
@@ -299,10 +299,10 @@ public class VoucherRepository : IVoucherRepository
         var existingVoucherCodes = result.ToList();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. ExistingVoucherCount={ExistingVoucherCount}",
+            "Database Completed. StoredProcedure={StoredProcedure}. ExistingVoucherCount={ExistingVoucherCount}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
-            stopwatch.ElapsedMilliseconds,
-            existingVoucherCodes.Count);
+            existingVoucherCodes.Count,
+            stopwatch.ElapsedMilliseconds);
 
         return existingVoucherCodes;
     }

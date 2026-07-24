@@ -28,9 +28,9 @@ public class EmailTemplateRepository : IEmailTemplateRepository
         var stopwatch = Stopwatch.StartNew();
 
         _logger.LogInformation(
-           "Executing stored procedure {StoredProcedure} with TemplateCode={TemplateCode}",
-           storedProcedure,
-           templateCode);
+            "Database Started. StoredProcedure={StoredProcedure}. TemplateCode={TemplateCode}",
+            storedProcedure,
+            templateCode);
 
         var result = await connection.QueryFirstOrDefaultAsync<EmailTemplateDto>(
             storedProcedure,
@@ -43,10 +43,10 @@ public class EmailTemplateRepository : IEmailTemplateRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-           "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TemplateFound={TemplateFound}",
-           storedProcedure,
-           stopwatch.ElapsedMilliseconds,
-           result is not null);
+            "Database Completed. StoredProcedure={StoredProcedure}. TemplateFound={TemplateFound}. Elapsed={ElapsedMilliseconds}ms",
+            storedProcedure,
+            result is not null,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }

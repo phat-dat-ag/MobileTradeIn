@@ -24,10 +24,11 @@ public class CreateVoucherHeaderHandler
     {
 
         _logger.LogInformation(
-             "Starting voucher batch creation. VoucherBatchCode={VoucherBatchCode}, ProductId={ProductId}, Quantity={Quantity}",
-             request.VoucherBatchCode,
-             request.ProductId,
-             request.Quantity);
+            "Business Started. Operation={Operation}. VoucherBatchCode={VoucherBatchCode}. ProductId={ProductId}. Quantity={Quantity}",
+            "CreateVoucherHeader",
+            request.VoucherBatchCode,
+            request.ProductId,
+            request.Quantity);
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -43,12 +44,18 @@ public class CreateVoucherHeaderHandler
                 CreatedBy = request.CreatedBy
             });
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. VoucherHeaderId={VoucherHeaderId}",
+            "CreateVoucherHeaderDatabase",
+            result.VoucherHeaderId);
+
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Voucher batch creation completed in {ElapsedMilliseconds} ms. VoucherHeaderId={VoucherHeaderId}",
-            stopwatch.ElapsedMilliseconds,
-            result.VoucherHeaderId);
+            "Business Completed. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. Elapsed={ElapsedMilliseconds}ms",
+            "CreateVoucherHeader",
+            result.VoucherHeaderId,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }

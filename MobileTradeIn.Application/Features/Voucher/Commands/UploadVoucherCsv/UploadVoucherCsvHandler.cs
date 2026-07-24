@@ -27,15 +27,24 @@ public class UploadVoucherCsvHandler
     {
         var header = await _repository.GetVoucherHeaderAsync(voucherHeaderId);
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. VoucherHeaderId={VoucherHeaderId}",
+            "GetVoucherHeader",
+            voucherHeaderId);
+
         if (header == null)
         {
-            _logger.LogWarning("VoucherHeader {HeaderId} not found.", voucherHeaderId);
+            _logger.LogWarning(
+                "Business Failed. Step={Step}. VoucherHeaderId={VoucherHeaderId}",
+                "GetVoucherHeader",
+                voucherHeaderId);
 
             throw new VoucherHeaderNotFoundException();
         }
 
         _logger.LogInformation(
-            "Validated voucher header. VoucherHeaderId={VoucherHeaderId}, ExpectedQuantity={ExpectedQuantity}",
+            "Business Step Completed. Step={Step}. VoucherHeaderId={VoucherHeaderId}. ExpectedQuantity={ExpectedQuantity}",
+            "ValidateVoucherHeader",
             voucherHeaderId,
             header.Quantity);
 
@@ -46,7 +55,9 @@ public class UploadVoucherCsvHandler
     {
         if (requestVoucherCount == 0)
         {
-            _logger.LogWarning("CSV contains no voucher.");
+            _logger.LogWarning(
+                "Business Failed. Step={Step}",
+                "ValidateVoucherCount");
 
             throw new NoVoucherException();
         }
@@ -54,12 +65,18 @@ public class UploadVoucherCsvHandler
         if (requestVoucherCount != headerVoucherQuantity)
         {
             _logger.LogWarning(
-                "Voucher quantity mismatch. Expected={Expected}, Actual={Actual}",
+                "Business Failed. Step={Step}. Expected={Expected}. Actual={Actual}",
+                "ValidateVoucherCount",
                 headerVoucherQuantity,
                 requestVoucherCount);
 
             throw new VoucherCountMismatch(headerVoucherQuantity, requestVoucherCount);
         }
+
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. VoucherCount={VoucherCount}",
+            "ValidateVoucherCount",
+            requestVoucherCount);
     }
 
     private void ValidateDuplicateCodes(List<VoucherImportDto> vouchers)
@@ -73,11 +90,16 @@ public class UploadVoucherCsvHandler
         if (duplicateCodes.Any())
         {
             _logger.LogWarning(
-                "Duplicate voucher codes found in CSV: {VoucherCodes}",
+                "Business Failed. Step={Step}. VoucherCodes={VoucherCodes}",
+                "ValidateDuplicateCodes",
                 string.Join(", ", duplicateCodes));
 
             throw new DuplicateVoucherCodesException(string.Join(", ", duplicateCodes));
         }
+
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}",
+            "ValidateDuplicateCodes");
     }
 
     private async Task ValidateExistingCodes(List<VoucherImportDto> vouchers)
@@ -87,17 +109,23 @@ public class UploadVoucherCsvHandler
                 .Select(req => req.VoucherCode)
                 .ToList());
 
+        _logger.LogInformation(
+                "Business Step Completed. Step={Step}",
+                "GetExistingVoucherCodes");
+
         if (existingCodes.Any())
         {
             _logger.LogWarning(
-                "Voucher codes already exist: {VoucherCodes}",
+                "Business Failed. Step={Step}. VoucherCodes={VoucherCodes}",
+                "ValidateExistingVoucherCodes",
                 string.Join(", ", existingCodes));
 
             throw new ExistingVoucherCodeException(string.Join(", ", existingCodes));
         }
 
         _logger.LogInformation(
-            "Validated existing voucher codes. No duplicate codes found in database.");
+            "Business Step Completed. Step={Step}",
+            "ValidateExistingVoucherCodes");
     }
 
     private async Task<int> ImportVouchersAsync(List<VoucherImportDto> vouchers)
@@ -110,9 +138,15 @@ public class UploadVoucherCsvHandler
                 batch.ToList());
 
             _logger.LogInformation(
-                "Voucher batch imported successfully. BatchSize={BatchSize}",
+                "Business Step Completed. Step={Step}. BatchSize={BatchSize}",
+                "ImportVoucherBatch",
                 batch.Count());
         }
+
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. ImportedCount={ImportedCount}",
+            "ImportVouchers",
+            importedCount);
 
         return importedCount;
     }
@@ -127,12 +161,17 @@ public class UploadVoucherCsvHandler
             "Voucher import completed successfully.",
             request.UploadedBy);
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}",
+            "UpdateUploadFileResult");
+
         await _repository.MarkVoucherHeaderProcessedAsync(
             request.VoucherHeaderId,
             request.UploadedBy);
 
         _logger.LogInformation(
-            "Updated voucher import result. VoucherHeaderId={VoucherHeaderId}",
+            "Business Step Completed. Step={Step}. VoucherHeaderId={VoucherHeaderId}",
+            "MarkVoucherHeaderProcessed",
             request.VoucherHeaderId);
     }
 
@@ -141,7 +180,8 @@ public class UploadVoucherCsvHandler
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Starting voucher import. VoucherHeaderId={VoucherHeaderId}, VoucherCount={VoucherCount}",
+            "Business Started. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. VoucherCount={VoucherCount}",
+            "UploadVoucherCsv",
             request.VoucherHeaderId,
             request.Vouchers.Count);
 
@@ -162,12 +202,13 @@ public class UploadVoucherCsvHandler
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Voucher import completed in {ElapsedMilliseconds} ms. VoucherHeaderId={VoucherHeaderId}, Total={Total}, Success={Success}, Failed={Failed}",
-            stopwatch.ElapsedMilliseconds,
+            "Business Completed. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. Total={Total}. Success={Success}. Failed={Failed}. Elapsed={ElapsedMilliseconds}ms",
+            "UploadVoucherCsv",
             request.VoucherHeaderId,
             request.Vouchers.Count,
             importedCount,
-            request.Vouchers.Count - importedCount);
+            request.Vouchers.Count - importedCount,
+            stopwatch.ElapsedMilliseconds);
 
         return new UploadVoucherResponse
         {

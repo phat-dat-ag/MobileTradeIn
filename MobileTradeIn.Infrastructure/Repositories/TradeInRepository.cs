@@ -38,7 +38,7 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@CreatedBy", request.CreatedBy);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. CustomerId={CustomerId}, ProductId={ProductId}",
+            "Database Started. StoredProcedure={StoredProcedure}. CustomerId={CustomerId}. ProductId={ProductId}",
             storedProcedure,
             request.CustomerId,
             request.ProductId);
@@ -51,7 +51,7 @@ public class TradeInRepository : ITradeInRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
 
@@ -73,7 +73,7 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@Notes", request.Notes);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            "Database Started. StoredProcedure={StoredProcedure}. TradeInOfferId={TradeInOfferId}",
             storedProcedure,
             request.TradeInOfferId);
 
@@ -85,7 +85,7 @@ public class TradeInRepository : ITradeInRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
     }
@@ -105,7 +105,7 @@ public class TradeInRepository : ITradeInRepository
         parameters.Add("@Notes", request.Notes);
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            "Database Started. StoredProcedure={StoredProcedure}. TradeInOfferId={TradeInOfferId}",
             storedProcedure,
             request.TradeInOfferId);
 
@@ -117,7 +117,7 @@ public class TradeInRepository : ITradeInRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms.",
+            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
             stopwatch.ElapsedMilliseconds);
     }
@@ -131,7 +131,7 @@ public class TradeInRepository : ITradeInRepository
         var stopwatch = Stopwatch.StartNew();
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            "Database Started. StoredProcedure={StoredProcedure}. TradeInOfferId={TradeInOfferId}",
             storedProcedure,
             tradeInOfferId);
 
@@ -145,10 +145,10 @@ public class TradeInRepository : ITradeInRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. TradeInFound={TradeInFound}",
+            "Database Completed. StoredProcedure={StoredProcedure}. TradeInFound={TradeInFound}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
-            stopwatch.ElapsedMilliseconds,
-            result is not null);
+            result is not null,
+            stopwatch.ElapsedMilliseconds);
 
 
         return result;
@@ -163,7 +163,7 @@ public class TradeInRepository : ITradeInRepository
         var stopwatch = Stopwatch.StartNew();
 
         _logger.LogInformation(
-            "Executing stored procedure {StoredProcedure}. TradeInOfferId={TradeInOfferId}",
+            "Database Started. StoredProcedure={StoredProcedure}. TradeInOfferId={TradeInOfferId}",
             storedProcedure,
             tradeInOfferId);
 
@@ -178,10 +178,10 @@ public class TradeInRepository : ITradeInRepository
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Stored procedure {StoredProcedure} completed in {ElapsedMilliseconds} ms. EmailDataFound={EmailDataFound}",
+            "Database Completed. StoredProcedure={StoredProcedure}. EmailDataFound={EmailDataFound}. Elapsed={ElapsedMilliseconds}ms",
             storedProcedure,
-            stopwatch.ElapsedMilliseconds,
-            result is not null);
+            result is not null,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }

@@ -34,7 +34,32 @@ builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
-app.UseSerilogRequestLogging();
+app.UseCorrelationId();
+
+app.UseSerilogRequestLogging(options =>
+{
+    options.MessageTemplate =
+        "HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000} ms";
+
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.Set(
+            "CorrelationId",
+            httpContext.Items["CorrelationId"]);
+
+        diagnosticContext.Set(
+            "UserId",
+            httpContext.User.Identity?.Name ?? "Anonymous");
+
+        diagnosticContext.Set(
+            "RequestHost",
+            httpContext.Request.Host.Value);
+
+        diagnosticContext.Set(
+            "RequestScheme",
+            httpContext.Request.Scheme);
+    };
+});
 
 app.UseGlobalException();
 

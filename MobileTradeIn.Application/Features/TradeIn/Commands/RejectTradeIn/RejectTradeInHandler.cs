@@ -21,8 +21,9 @@ public class RejectTradeInHandler
     public async Task Handle(RejectTradeInCommand request, CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-             "Starting trade-in rejection. TradeInOfferId={TradeInOfferId}",
-             request.TradeInOfferId);
+            "Business Started. Operation={Operation}. TradeInOfferId={TradeInOfferId}",
+            "RejectTradeIn",
+            request.TradeInOfferId);
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -34,11 +35,17 @@ public class RejectTradeInHandler
                 Notes = request.Notes
             });
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+            "RejectTradeInDatabase",
+            request.TradeInOfferId);
+
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Trade-in rejection completed in {ElapsedMilliseconds} ms. TradeInOfferId={TradeInOfferId}",
-            stopwatch.ElapsedMilliseconds,
-            request.TradeInOfferId);
+            "Business Completed. Operation={Operation}. TradeInOfferId={TradeInOfferId}. Elapsed={ElapsedMilliseconds}ms",
+            "RejectTradeIn",
+            request.TradeInOfferId,
+            stopwatch.ElapsedMilliseconds);
     }
 }

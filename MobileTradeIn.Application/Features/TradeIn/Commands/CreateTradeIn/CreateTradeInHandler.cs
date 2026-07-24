@@ -35,7 +35,8 @@ public class CreateTradeInHandler
         if (!validConditions.Contains(request.DeviceCondition.ToUpper()))
         {
             _logger.LogWarning(
-                "Invalid device condition. CustomerId={CustomerId}, DeviceCondition={DeviceCondition}",
+                "Business Failed. Step={Step}. CustomerId={CustomerId}. DeviceCondition={DeviceCondition}",
+                "ValidateDeviceCondition",
                 request.CustomerId,
                 request.DeviceCondition);
 
@@ -45,7 +46,8 @@ public class CreateTradeInHandler
         if (request.VoucherCode != null && string.IsNullOrWhiteSpace(request.VoucherCode))
         {
             _logger.LogWarning(
-                "Invalid voucher code. CustomerId={CustomerId}, VoucherCode={VoucherCode}",
+                "Business Failed. Step={Step}. CustomerId={CustomerId}. VoucherCode={VoucherCode}",
+                "ValidateVoucherCode",
                 request.CustomerId,
                 request.VoucherCode);
 
@@ -53,7 +55,8 @@ public class CreateTradeInHandler
         }
 
         _logger.LogInformation(
-            "Starting trade-in creation. CustomerId={CustomerId}, ProductId={ProductId}",
+            "Business Started. Operation={Operation}. CustomerId={CustomerId}. ProductId={ProductId}",
+            "CreateTradeIn",
             request.CustomerId,
             request.ProductId);
 
@@ -70,13 +73,20 @@ public class CreateTradeInHandler
                 CreatedBy = request.CreatedBy
             });
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. CustomerId={CustomerId}. ProductId={ProductId}",
+            "CreateTradeInDatabase",
+            request.CustomerId,
+            request.ProductId);
+
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Trade-in creation completed in {ElapsedMilliseconds} ms. CustomerId={CustomerId}, ProductId={ProductId}",
-            stopwatch.ElapsedMilliseconds,
+            "Business Completed. Operation={Operation}. CustomerId={CustomerId}. ProductId={ProductId}. Elapsed={ElapsedMilliseconds}ms",
+            "CreateTradeIn",
             request.CustomerId,
-            request.ProductId);
+            request.ProductId,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }

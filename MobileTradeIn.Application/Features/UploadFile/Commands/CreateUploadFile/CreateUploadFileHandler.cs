@@ -25,7 +25,8 @@ public class CreateUploadFileHandler
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Starting upload file creation. FileName={FileName}, FileType={FileType}",
+            "Business Started. Operation={Operation}. FileName={FileName}. FileType={FileType}",
+            "CreateUploadFile",
             request.FileName,
             request.FileType);
 
@@ -41,12 +42,18 @@ public class CreateUploadFileHandler
                     UploadedBy = request.UploadedBy
                 });
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. UploadFileId={UploadFileId}",
+            "CreateUploadFileDatabase",
+            result.UploadFileId);
+
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Upload file creation completed in {ElapsedMilliseconds} ms. UploadFileId={UploadFileId}",
-            stopwatch.ElapsedMilliseconds,
-            result.UploadFileId);
+            "Business Completed. Operation={Operation}. UploadFileId={UploadFileId}. Elapsed={ElapsedMilliseconds}ms",
+            "CreateUploadFile",
+            result.UploadFileId,
+            stopwatch.ElapsedMilliseconds);
 
         return result;
     }

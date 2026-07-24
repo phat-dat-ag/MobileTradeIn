@@ -1,6 +1,7 @@
 ﻿using FluentValidation;
 using Microsoft.Data.SqlClient;
 using MobileTradeIn.Api.Common.Responses;
+using MobileTradeIn.Api.Constants;
 using MobileTradeIn.Application.Common.Exceptions.Business;
 
 namespace MobileTradeIn.Api.Middlewares;
@@ -26,8 +27,10 @@ public class ExceptionMiddleware
         {
             _logger.LogError(
                 ex,
-                "Unhandled exception occurred. Path={Path}",
-                context.Request.Path);
+                "API Failed. Method={Method}. Path={Path}. CorrelationId={CorrelationId}",
+                context.Request.Method,
+                context.Request.Path,
+                context.Items["CorrelationId"]);
 
             await HandleExceptionAsync(context, ex);
         }
@@ -94,7 +97,8 @@ public class ExceptionMiddleware
             Success = false,
             Message = message,
             Data = null,
-            TraceId = context.TraceIdentifier
+            TraceId = context.TraceIdentifier,
+            CorrelationId = context.Items[HttpContextKeys.CorrelationId]?.ToString()
         };
 
         await context.Response.WriteAsJsonAsync(response);

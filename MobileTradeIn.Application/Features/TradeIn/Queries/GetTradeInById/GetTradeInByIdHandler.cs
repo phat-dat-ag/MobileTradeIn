@@ -23,19 +23,28 @@ public class GetTradeInByIdHandler : IRequestHandler<GetTradeInByIdQuery, TradeI
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-           "Starting trade-in retrieval. TradeInOfferId={TradeInOfferId}",
-           request.TradeInOfferId);
+            "Business Started. Operation={Operation}. TradeInOfferId={TradeInOfferId}",
+            "GetTradeInById",
+            request.TradeInOfferId);
 
         var stopwatch = Stopwatch.StartNew();
 
         var tradeIn = await _repository.GetTradeInByIdAsync(request.TradeInOfferId);
 
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+            "GetTradeInByIdDatabase",
+            request.TradeInOfferId);
+
         if (tradeIn == null)
         {
+            stopwatch.Stop();
+
             _logger.LogWarning(
-               "Trade-in not found. TradeInOfferId={TradeInOfferId}. ElapsedMilliseconds={ElapsedMilliseconds}",
-               request.TradeInOfferId,
-               stopwatch.ElapsedMilliseconds);
+                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}. Elapsed={ElapsedMilliseconds}ms",
+                "GetTradeInByIdDatabase",
+                request.TradeInOfferId,
+                stopwatch.ElapsedMilliseconds);
 
             throw new TradeInNotFoundException(request.TradeInOfferId);
         }
@@ -43,9 +52,10 @@ public class GetTradeInByIdHandler : IRequestHandler<GetTradeInByIdQuery, TradeI
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Trade-in retrieval completed in {ElapsedMilliseconds} ms. TradeInOfferId={TradeInOfferId}",
-            stopwatch.ElapsedMilliseconds,
-            request.TradeInOfferId);
+            "Business Completed. Operation={Operation}. TradeInOfferId={TradeInOfferId}. Elapsed={ElapsedMilliseconds}ms",
+            "GetTradeInById",
+            request.TradeInOfferId,
+            stopwatch.ElapsedMilliseconds);
 
         return tradeIn;
     }

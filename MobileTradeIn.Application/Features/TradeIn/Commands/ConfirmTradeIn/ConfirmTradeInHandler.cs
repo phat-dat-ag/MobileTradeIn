@@ -36,7 +36,8 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
-            "Starting trade-in confirmation. TradeInOfferId={TradeInOfferId}",
+            "Business Started. Operation={Operation}. TradeInOfferId={TradeInOfferId}",
+            "ConfirmTradeIn",
             request.TradeInOfferId);
 
         var stopwatch = Stopwatch.StartNew();
@@ -50,20 +51,23 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
             });
 
         _logger.LogInformation(
-            "Trade-in confirmed in database. TradeInOfferId={TradeInOfferId}",
+            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+            "ConfirmTradeInDatabase",
             request.TradeInOfferId);
 
         var emailInfo =
             await _repository.GetTradeInEmailAsync(request.TradeInOfferId);
 
         _logger.LogInformation(
-            "Retrieved trade-in email information. TradeInOfferId={TradeInOfferId}",
+            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+            "LoadTradeInEmail",
             request.TradeInOfferId);
 
         if (emailInfo == null)
         {
             _logger.LogWarning(
-                "TradeIn email information not found. OfferId={OfferId}",
+                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+                "LoadTradeInEmail",
                 request.TradeInOfferId);
 
             throw new EmailInforNotFoundException();
@@ -73,13 +77,16 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
             await _emailTemplateRepository.GetEmailTemplateByTemplateCodeAsync("TRADEIN_APPROVED");
 
         _logger.LogInformation(
-            "Loaded email template {TemplateCode}",
+            "Business Step Completed. Step={Step}. TemplateCode={TemplateCode}",
+            "LoadEmailTemplate",
             "TRADEIN_APPROVED");
 
         if (template == null)
         {
             _logger.LogWarning(
-                "Email template TRADEIN_APPROVED not found.");
+                 "Business Failed. Step={Step}. TemplateCode={TemplateCode}",
+                 "LoadEmailTemplate",
+                 "TRADEIN_APPROVED");
 
             throw new EmailTemplateNotFoundException();
         }
@@ -105,7 +112,8 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
         try
         {
             _logger.LogInformation(
-                "Sending confirmation email. TradeInOfferId={TradeInOfferId}, CustomerEmail={CustomerEmail}",
+                "Business Step Started. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
                 request.TradeInOfferId,
                 emailInfo.CustomerEmail);
 
@@ -115,7 +123,8 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
                 body);
 
             _logger.LogInformation(
-                "Confirmation email sent successfully. TradeInOfferId={TradeInOfferId}, CustomerEmail={CustomerEmail}",
+                "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
                 request.TradeInOfferId,
                 emailInfo.CustomerEmail);
         }
@@ -123,15 +132,18 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
         {
             _logger.LogError(
                 exception,
-                "Failed to send confirmation email to {Email}",
+                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
+                request.TradeInOfferId,
                 emailInfo.CustomerEmail);
         }
 
         stopwatch.Stop();
 
         _logger.LogInformation(
-            "Trade-in confirmation completed in {ElapsedMilliseconds} ms. TradeInOfferId={TradeInOfferId}",
-            stopwatch.ElapsedMilliseconds,
-            request.TradeInOfferId);
+            "Business Completed. Operation={Operation}. TradeInOfferId={TradeInOfferId}. Elapsed={ElapsedMilliseconds}ms",
+            "ConfirmTradeIn",
+            request.TradeInOfferId,
+            stopwatch.ElapsedMilliseconds);
     }
 }
