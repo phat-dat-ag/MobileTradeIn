@@ -1,6 +1,7 @@
 ﻿using MediatR;
 using Microsoft.Extensions.Logging;
 using MobileTradeIn.Application.Common.Exceptions.NotFound;
+using MobileTradeIn.Application.DTOs.Email;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
@@ -31,6 +32,101 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
         _emailService = emailService;
     }
 
+    private async Task<(TradeInEmailDto emailInfo, EmailTemplateDto emailTemplate)> GetEmailInforAndEmailTemplate(int tradeInOfferId)
+    {
+        var emailInfo =
+            await _repository.GetTradeInEmailAsync(tradeInOfferId);
+
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+            "LoadTradeInEmail",
+            tradeInOfferId);
+
+        if (emailInfo == null)
+        {
+            _logger.LogWarning(
+                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}",
+                "LoadTradeInEmail",
+                tradeInOfferId);
+
+            throw new EmailInforNotFoundException();
+        }
+
+        var emailTemplate =
+            await _emailTemplateRepository.GetEmailTemplateByTemplateCodeAsync("TRADEIN_APPROVED");
+
+        _logger.LogInformation(
+            "Business Step Completed. Step={Step}. TemplateCode={TemplateCode}",
+            "LoadEmailTemplate",
+            "TRADEIN_APPROVED");
+
+        if (emailTemplate == null)
+        {
+            _logger.LogWarning(
+                 "Business Failed. Step={Step}. TemplateCode={TemplateCode}",
+                 "LoadEmailTemplate",
+                 "TRADEIN_APPROVED");
+
+            throw new EmailTemplateNotFoundException();
+        }
+
+        return (emailInfo, emailTemplate);
+    }
+
+    private (string subject, string body) BuildEmailContent(EmailTemplateDto template, TradeInEmailDto emailInfo)
+    {
+        var values = new Dictionary<string, string>
+        {
+            { "CustomerName", emailInfo.CustomerName },
+            { "ProductName", emailInfo.ProductName },
+            { "OfferAmount", emailInfo.OfferAmount.ToString("N0") + " VND" },
+            { "TransactionNumber", emailInfo.TransactionNumber }
+        };
+
+        return
+            (
+            _emailTemplateService.RenderContentFromEmailTemplate(
+                template.Subject,
+                values),
+
+            _emailTemplateService.RenderContentFromEmailTemplate(
+                template.Content,
+                values)
+            );
+    }
+
+    private async Task SendConfirmationEmailAsync(int tradeInOfferId, string customerEmail, string subject, string body)
+    {
+        try
+        {
+            _logger.LogInformation(
+                "Business Step Started. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
+                tradeInOfferId,
+                customerEmail);
+
+            await _emailService.SendEmailAsync(
+                customerEmail,
+                subject,
+                body);
+
+            _logger.LogInformation(
+                "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
+                tradeInOfferId,
+                customerEmail);
+        }
+        catch (Exception exception)
+        {
+            _logger.LogError(
+                exception,
+                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
+                "SendConfirmationEmail",
+                tradeInOfferId,
+                customerEmail);
+        }
+    }
+
     public async Task Handle(
         ConfirmTradeInCommand request,
         CancellationToken cancellationToken)
@@ -55,88 +151,11 @@ public class ConfirmTradeInHandler : IRequestHandler<ConfirmTradeInCommand>
             "ConfirmTradeInDatabase",
             request.TradeInOfferId);
 
-        var emailInfo =
-            await _repository.GetTradeInEmailAsync(request.TradeInOfferId);
+        var (emailInfo, emailTemplate) = await GetEmailInforAndEmailTemplate(request.TradeInOfferId);
 
-        _logger.LogInformation(
-            "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}",
-            "LoadTradeInEmail",
-            request.TradeInOfferId);
+        var (subject, body) = BuildEmailContent(emailTemplate, emailInfo);
 
-        if (emailInfo == null)
-        {
-            _logger.LogWarning(
-                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}",
-                "LoadTradeInEmail",
-                request.TradeInOfferId);
-
-            throw new EmailInforNotFoundException();
-        }
-
-        var template =
-            await _emailTemplateRepository.GetEmailTemplateByTemplateCodeAsync("TRADEIN_APPROVED");
-
-        _logger.LogInformation(
-            "Business Step Completed. Step={Step}. TemplateCode={TemplateCode}",
-            "LoadEmailTemplate",
-            "TRADEIN_APPROVED");
-
-        if (template == null)
-        {
-            _logger.LogWarning(
-                 "Business Failed. Step={Step}. TemplateCode={TemplateCode}",
-                 "LoadEmailTemplate",
-                 "TRADEIN_APPROVED");
-
-            throw new EmailTemplateNotFoundException();
-        }
-
-        var values = new Dictionary<string, string>
-        {
-            { "CustomerName", emailInfo.CustomerName },
-            { "ProductName", emailInfo.ProductName },
-            { "OfferAmount", emailInfo.OfferAmount.ToString("N0") + " VND" },
-            { "TransactionNumber", emailInfo.TransactionNumber }
-        };
-
-        var subject =
-            _emailTemplateService.RenderContentFromEmailTemplate(
-                template.Subject,
-                values);
-
-        var body =
-            _emailTemplateService.RenderContentFromEmailTemplate(
-                template.Content,
-                values);
-
-        try
-        {
-            _logger.LogInformation(
-                "Business Step Started. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
-                "SendConfirmationEmail",
-                request.TradeInOfferId,
-                emailInfo.CustomerEmail);
-
-            await _emailService.SendEmailAsync(
-                emailInfo.CustomerEmail,
-                subject,
-                body);
-
-            _logger.LogInformation(
-                "Business Step Completed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
-                "SendConfirmationEmail",
-                request.TradeInOfferId,
-                emailInfo.CustomerEmail);
-        }
-        catch (Exception exception)
-        {
-            _logger.LogError(
-                exception,
-                "Business Failed. Step={Step}. TradeInOfferId={TradeInOfferId}. CustomerEmail={CustomerEmail}",
-                "SendConfirmationEmail",
-                request.TradeInOfferId,
-                emailInfo.CustomerEmail);
-        }
+        await SendConfirmationEmailAsync(request.TradeInOfferId, emailInfo.CustomerEmail, subject, body);
 
         stopwatch.Stop();
 
