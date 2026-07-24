@@ -20,9 +20,7 @@ public class CreateTradeInHandler
         _logger = logger;
     }
 
-    public async Task<CreateTradeInResponse> Handle(
-        CreateTradeInCommand request,
-        CancellationToken cancellationToken)
+    private void ValidateDeviceCondition(string deviceCondition, int customerId)
     {
         string[] validConditions =
         [
@@ -32,27 +30,39 @@ public class CreateTradeInHandler
             "POOR"
         ];
 
-        if (!validConditions.Contains(request.DeviceCondition.ToUpper()))
+        if (!validConditions.Contains(deviceCondition.ToUpper()))
         {
             _logger.LogWarning(
                 "Business Failed. Step={Step}. CustomerId={CustomerId}. DeviceCondition={DeviceCondition}",
                 "ValidateDeviceCondition",
-                request.CustomerId,
-                request.DeviceCondition);
+                customerId,
+               deviceCondition);
 
-            throw new InvalidDeviceConditionException(request.DeviceCondition);
+            throw new InvalidDeviceConditionException(deviceCondition);
         }
+    }
 
-        if (request.VoucherCode != null && string.IsNullOrWhiteSpace(request.VoucherCode))
+    private void ValidateVoucherCode(string? voucherCode, int customerId)
+    {
+        if (voucherCode != null && string.IsNullOrWhiteSpace(voucherCode))
         {
             _logger.LogWarning(
                 "Business Failed. Step={Step}. CustomerId={CustomerId}. VoucherCode={VoucherCode}",
                 "ValidateVoucherCode",
-                request.CustomerId,
-                request.VoucherCode);
+                customerId,
+                voucherCode);
 
             throw new InvalidVoucherCodeException();
         }
+    }
+
+    public async Task<CreateTradeInResponse> Handle(
+        CreateTradeInCommand request,
+        CancellationToken cancellationToken)
+    {
+        ValidateDeviceCondition(request.DeviceCondition, request.CustomerId);
+
+        ValidateVoucherCode(request.VoucherCode, request.CustomerId);
 
         _logger.LogInformation(
             "Business Started. Operation={Operation}. CustomerId={CustomerId}. ProductId={ProductId}",
