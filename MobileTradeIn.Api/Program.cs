@@ -1,4 +1,7 @@
+using FluentValidation;
+using MediatR;
 using MobileTradeIn.Api.Extensions;
+using MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Commands.CreateTradeIn;
 using MobileTradeIn.Infrastructure.Persistence;
 using Serilog;
@@ -10,6 +13,12 @@ builder.Services.AddMediatR(cfg =>
     cfg.RegisterServicesFromAssembly(
         typeof(CreateTradeInCommand).Assembly);
 });
+
+builder.Services.AddValidatorsFromAssemblyContaining<ConfirmTradeInCommandValidator>();
+
+builder.Services.AddTransient(
+    typeof(IPipelineBehavior<,>),
+    typeof(ValidationBehavior<,>));
 
 builder.Host.UseSerilog((context, configuration) =>
 {

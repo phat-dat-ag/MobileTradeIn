@@ -13,6 +13,7 @@
   <ItemGroup>
     <PackageReference Include="CsvHelper" Version="33.1.0" />
     <PackageReference Include="MediatR" Version="13.1.0" />
+    <PackageReference Include="PPioli.FluentValidation.Blazor" Version="11.1.0" />
   </ItemGroup>
 
 </Project>

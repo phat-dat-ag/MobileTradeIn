@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using FluentValidation;
+using Microsoft.Data.SqlClient;
 using MobileTradeIn.Api.Common.Responses;
 using MobileTradeIn.Application.Common.Exceptions.Business;
 
@@ -43,6 +44,13 @@ public class ExceptionMiddleware
 
         switch (exception)
         {
+            case ValidationException validationEx:
+
+                statusCode = StatusCodes.Status400BadRequest;
+                message = string.Join("; ",
+                    validationEx.Errors.Select(x => x.ErrorMessage));
+                break;
+
             case BusinessException businessEx:
 
                 statusCode = StatusCodes.Status404NotFound;
