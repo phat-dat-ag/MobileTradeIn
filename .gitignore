@@ -40,3 +40,6 @@ Desktop.ini
 # ReSharper
 _ReSharper*/
 *.DotSettings.user
+
+# Logs
+**/Logs/
