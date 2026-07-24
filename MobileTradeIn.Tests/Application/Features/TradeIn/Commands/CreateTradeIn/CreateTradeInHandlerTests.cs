@@ -5,7 +5,7 @@ using MobileTradeIn.Application.Features.TradeIn.Commands.CreateTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using Moq;
 
-namespace MobileTradeIn.Tests.TradeIn;
+namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.CreateTradeIn;
 
 public class CreateTradeInHandlerTests
 {

@@ -4,7 +4,7 @@ using MobileTradeIn.Application.Features.TradeIn.Commands.RejectTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using Moq;
 
-namespace MobileTradeIn.Tests.Features.TradeIn.Commands.RejectTradeIn
+namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.RejectTradeIn
 {
     public class RejectTradeInHandlerTests
     {

@@ -5,7 +5,7 @@ using MobileTradeIn.Application.Features.TradeIn.Queries.GetTradeInById;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using Moq;
 
-namespace MobileTradeIn.Tests.Features.TradeIn.Queries.GetTradeInById
+namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInById
 {
     public class GetTradeInByIdHandlerTests
     {

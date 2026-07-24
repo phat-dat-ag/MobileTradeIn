@@ -1,11 +1,11 @@
 ﻿using FluentValidation;
 
-namespace MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucherCsv;
+namespace MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucher;
 
-public class UploadVoucherCsvCommandValidator
-    : AbstractValidator<UploadVoucherCsvCommand>
+public class UploadVoucherCommandValidator
+    : AbstractValidator<UploadVoucherCommand>
 {
-    public UploadVoucherCsvCommandValidator()
+    public UploadVoucherCommandValidator()
     {
         RuleFor(x => x.UploadField)
             .GreaterThan(0)

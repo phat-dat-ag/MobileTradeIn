@@ -7,7 +7,7 @@ using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
 using Moq;
 
-namespace MobileTradeIn.Tests.Features.TradeIn.Commands.ConfirmTradeIn
+namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTradeIn
 {
     public class ConfirmTradeInHandlerTests
     {

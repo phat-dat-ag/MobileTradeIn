@@ -5,21 +5,27 @@ using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Services;
 using System.Globalization;
 
-namespace MobileTradeIn.Infrastructure.Services;
+namespace MobileTradeIn.Infrastructure.Services.FileReaders.Csv;
 
-public class CsvService : ICsvService
+public class CsvFileReader : IFileReader
 {
-    private readonly ILogger<CsvService> _logger;
+    private readonly ILogger<CsvFileReader> _logger;
 
-    public CsvService(ILogger<CsvService> logger)
+    public CsvFileReader(ILogger<CsvFileReader> logger)
     {
         _logger = logger;
     }
-    public Task<List<VoucherImportDto>> ReadVoucherCsvAsync(Stream stream, int voucherHeaderId, string createdBy)
+
+    public bool CanRead(string extension)
+    {
+        return extension.Equals(".csv", StringComparison.OrdinalIgnoreCase);
+    }
+
+    public List<VoucherImportDto> ReadAsync(Stream stream, int voucherHeaderId, string createdBy)
     {
         _logger.LogInformation(
             "Service Started. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}",
-            "ReadVoucherCsv",
+            "IFileReader",
             voucherHeaderId);
 
         using var reader = new StreamReader(stream);
@@ -40,8 +46,8 @@ public class CsvService : ICsvService
         {
             vouchers.Add(new VoucherImportDto
             {
-                VoucherCode = record.VoucherCode,
                 VoucherHeaderId = voucherHeaderId,
+                VoucherCode = record.VoucherCode,
                 StartDate = record.StartDate,
                 EndDate = record.EndDate,
                 IsActive = true,
@@ -51,10 +57,10 @@ public class CsvService : ICsvService
 
         _logger.LogInformation(
             "Service Completed. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. VoucherCount={VoucherCount}",
-            "ReadVoucherCsv",
+            "IFileReader",
             voucherHeaderId,
             vouchers.Count);
 
-        return Task.FromResult(vouchers);
+        return vouchers;
     }
 }

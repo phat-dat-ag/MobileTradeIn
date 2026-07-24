@@ -4,6 +4,7 @@ using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
 using MobileTradeIn.Infrastructure.Repositories;
 using MobileTradeIn.Infrastructure.Services;
+using MobileTradeIn.Infrastructure.Services.FileReaders.Csv;
 
 namespace MobileTradeIn.Infrastructure.Persistence;
 
@@ -21,7 +22,7 @@ public static class DependencyInjection
 
         services.AddScoped<IVoucherRepository, VoucherRepository>();
 
-        services.AddScoped<ICsvService, CsvService>();
+        services.AddScoped<IFileReader, CsvFileReader>();
 
         services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
 

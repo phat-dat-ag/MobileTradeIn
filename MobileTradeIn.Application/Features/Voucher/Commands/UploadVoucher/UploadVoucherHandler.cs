@@ -7,17 +7,17 @@ using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using System.Diagnostics;
 
-namespace MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucherCsv;
+namespace MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucher;
 
-public class UploadVoucherCsvHandler
-    : IRequestHandler<UploadVoucherCsvCommand, UploadVoucherResponse>
+public class UploadVoucherHandler
+    : IRequestHandler<UploadVoucherCommand, UploadVoucherResponse>
 {
     private readonly IVoucherRepository _repository;
-    private readonly ILogger<UploadVoucherCsvHandler> _logger;
+    private readonly ILogger<UploadVoucherHandler> _logger;
 
-    public UploadVoucherCsvHandler(
+    public UploadVoucherHandler(
         IVoucherRepository repository,
-        ILogger<UploadVoucherCsvHandler> logger)
+        ILogger<UploadVoucherHandler> logger)
     {
         _repository = repository;
         _logger = logger;
@@ -151,7 +151,7 @@ public class UploadVoucherCsvHandler
         return importedCount;
     }
 
-    private async Task UpdateImportResultAsync(UploadVoucherCsvCommand request, int importedCount)
+    private async Task UpdateImportResultAsync(UploadVoucherCommand request, int importedCount)
     {
         await _repository.UpdateUploadFileResultAsync(
             request.UploadField,
@@ -176,12 +176,12 @@ public class UploadVoucherCsvHandler
     }
 
     public async Task<UploadVoucherResponse> Handle(
-        UploadVoucherCsvCommand request,
+        UploadVoucherCommand request,
         CancellationToken cancellationToken)
     {
         _logger.LogInformation(
             "Business Started. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. VoucherCount={VoucherCount}",
-            "UploadVoucherCsv",
+            "UploadVoucher",
             request.VoucherHeaderId,
             request.Vouchers.Count);
 
@@ -203,7 +203,7 @@ public class UploadVoucherCsvHandler
 
         _logger.LogInformation(
             "Business Completed. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}. Total={Total}. Success={Success}. Failed={Failed}. Elapsed={ElapsedMilliseconds}ms",
-            "UploadVoucherCsv",
+            "UploadVoucher",
             request.VoucherHeaderId,
             request.Vouchers.Count,
             importedCount,

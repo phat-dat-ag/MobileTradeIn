@@ -1,4 +1,4 @@
-﻿namespace MobileTradeIn.Tests.Application.DTOs.Voucher;
+﻿namespace MobileTradeIn.Tests.Application.Voucher;
 
 public class BulkInsertResponseTests
 {

@@ -3,7 +3,7 @@ using MobileTradeIn.Application.Common.Exceptions.Conflict;
 using MobileTradeIn.Application.Common.Exceptions.NotFound;
 using MobileTradeIn.Application.Common.Exceptions.Validation;
 using MobileTradeIn.Application.DTOs.Voucher;
-using MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucherCsv;
+using MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using Moq;
 
@@ -12,15 +12,15 @@ namespace MobileTradeIn.Tests.Application.Features.Voucher.Commands.UploadVouche
 public class UploadVoucherCsvHandlerTests
 {
     private readonly Mock<IVoucherRepository> _repositoryMock;
-    private readonly Mock<ILogger<UploadVoucherCsvHandler>> _loggerMock;
-    private readonly UploadVoucherCsvHandler _handler;
+    private readonly Mock<ILogger<UploadVoucherHandler>> _loggerMock;
+    private readonly UploadVoucherHandler _handler;
 
     public UploadVoucherCsvHandlerTests()
     {
         _repositoryMock = new Mock<IVoucherRepository>();
-        _loggerMock = new Mock<ILogger<UploadVoucherCsvHandler>>();
+        _loggerMock = new Mock<ILogger<UploadVoucherHandler>>();
 
-        _handler = new UploadVoucherCsvHandler(
+        _handler = new UploadVoucherHandler(
             _repositoryMock.Object,
             _loggerMock.Object);
     }
@@ -41,7 +41,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowVoucherHeaderNotFoundException_WhenHeaderDoesNotExist()
     {
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -67,7 +67,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowNoVoucherException_WhenVoucherListIsEmpty()
     {
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -90,7 +90,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowVoucherCountMismatch_WhenQuantityDoesNotMatch()
     {
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -116,7 +116,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowDuplicateVoucherCodesException_WhenDuplicateCodesExist()
     {
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -143,7 +143,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowExistingVoucherCodeException_WhenVoucherAlreadyExists()
     {
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -187,7 +187,7 @@ public class UploadVoucherCsvHandlerTests
             CreateVoucher("VC002")
         };
 
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
@@ -248,7 +248,7 @@ public class UploadVoucherCsvHandlerTests
             .Select(i => CreateVoucher($"VC{i:0000}"))
             .ToList();
 
-        var command = new UploadVoucherCsvCommand
+        var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
             UploadField = 1,
