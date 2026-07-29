@@ -12,7 +12,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000,
@@ -27,31 +26,10 @@ public class CreateVoucherHeaderCommandValidatorTests
     }
 
     [Fact]
-    public void Validate_ShouldFail_WhenUploadFileIdIsLessThanOrEqualToZero()
-    {
-        var command = new CreateVoucherHeaderCommand
-        {
-            UploadFileId = 0,
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
-
-        ValidationResult result = _validator.Validate(command);
-
-        Assert.False(result.IsValid);
-        Assert.Contains(result.Errors,
-            e => e.PropertyName == nameof(command.UploadFileId));
-    }
-
-    [Fact]
     public void Validate_ShouldFail_WhenVoucherBatchCodeIsEmpty()
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = string.Empty,
             ProductId = 1,
             VoucherValue = 100000,
@@ -71,7 +49,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = new string('A', 101),
             ProductId = 1,
             VoucherValue = 100000,
@@ -91,7 +68,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 0,
             VoucherValue = 100000,
@@ -111,7 +87,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 0,
@@ -131,7 +106,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000.5m,
@@ -151,7 +125,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000,
@@ -171,7 +144,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000,
@@ -192,7 +164,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000,
@@ -212,7 +183,6 @@ public class CreateVoucherHeaderCommandValidatorTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 1,
             VoucherValue = 100000,

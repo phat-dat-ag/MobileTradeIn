@@ -2,8 +2,6 @@
 
 public class CreateVoucherHeaderRequest
 {
-    public int UploadFileId { get; set; }
-
     public string VoucherBatchCode { get; set; } = string.Empty;
 
     public int ProductId { get; set; }

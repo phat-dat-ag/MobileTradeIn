@@ -5,9 +5,6 @@ namespace MobileTradeIn.Application.Features.Voucher.Commands.CreateVoucherHeade
 
 public class CreateVoucherHeaderCommand : IRequest<CreateVoucherHeaderResponse>
 {
-
-    public int UploadFileId { get; set; }
-
     public string VoucherBatchCode { get; set; } = string.Empty;
 
     public int ProductId { get; set; }

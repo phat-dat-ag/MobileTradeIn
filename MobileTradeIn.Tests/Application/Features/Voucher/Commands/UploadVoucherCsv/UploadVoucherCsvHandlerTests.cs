@@ -225,16 +225,6 @@ public class UploadVoucherCsvHandlerTests
             Times.Once);
 
         _repositoryMock.Verify(
-            x => x.UpdateUploadFileResultAsync(
-                command.UploadField,
-                2,
-                2,
-                0,
-                "Voucher import completed successfully.",
-                command.UploadedBy),
-            Times.Once);
-
-        _repositoryMock.Verify(
             x => x.MarkVoucherHeaderProcessedAsync(
                 command.VoucherHeaderId,
                 command.UploadedBy),
@@ -282,16 +272,6 @@ public class UploadVoucherCsvHandlerTests
         _repositoryMock.Verify(
             x => x.BulkInsertVoucherAsync(It.IsAny<List<VoucherImportDto>>()),
             Times.Exactly(3));
-
-        _repositoryMock.Verify(
-            x => x.UpdateUploadFileResultAsync(
-                command.UploadField,
-                1001,
-                1001,
-                0,
-                "Voucher import completed successfully.",
-                command.UploadedBy),
-            Times.Once);
 
         _repositoryMock.Verify(
             x => x.MarkVoucherHeaderProcessedAsync(

@@ -27,7 +27,6 @@ public class CreateVoucherHeaderHandlerTests
     {
         var command = new CreateVoucherHeaderCommand
         {
-            UploadFileId = 1,
             VoucherBatchCode = "BATCH001",
             ProductId = 10,
             VoucherValue = 500000,
@@ -58,7 +57,6 @@ public class CreateVoucherHeaderHandlerTests
         _repositoryMock.Verify(
             x => x.CreateVoucherHeaderAsync(
                 It.Is<CreateVoucherHeaderRequest>(r =>
-                    r.UploadFileId == command.UploadFileId &&
                     r.VoucherBatchCode == command.VoucherBatchCode &&
                     r.ProductId == command.ProductId &&
                     r.VoucherValue == command.VoucherValue &&

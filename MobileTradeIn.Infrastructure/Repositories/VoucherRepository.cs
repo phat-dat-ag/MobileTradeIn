@@ -1,6 +1,5 @@
 ﻿using Dapper;
 using Microsoft.Extensions.Logging;
-using MobileTradeIn.Application.DTOs.UploadFile;
 using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Infrastructure.Persistence;
@@ -20,44 +19,6 @@ public class VoucherRepository : IVoucherRepository
         _logger = logger;
     }
 
-    public async Task<CreateUploadFileResponse> CreateUploadFileAsync(
-        CreateUploadFileRequest request)
-    {
-        const string storedProcedure = "trs.spUploadFile_Create";
-
-        using var connection = _context.CreateConnection();
-
-        var stopwatch = Stopwatch.StartNew();
-
-        var parameters = new DynamicParameters();
-
-        parameters.Add("@FileName", request.FileName);
-        parameters.Add("@FilePath", request.FilePath);
-        parameters.Add("@FileType", request.FileType);
-        parameters.Add("@UploadedBy", request.UploadedBy);
-
-        _logger.LogInformation(
-            "Database Started. StoredProcedure={StoredProcedure}. FileName={FileName}. FileType={FileType}",
-            storedProcedure,
-            request.FileName,
-            request.FileType);
-
-        var result =
-            await connection.QueryFirstAsync<CreateUploadFileResponse>(
-                storedProcedure,
-                parameters,
-                commandType: CommandType.StoredProcedure);
-
-        stopwatch.Stop();
-
-        _logger.LogInformation(
-            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
-            storedProcedure,
-            stopwatch.ElapsedMilliseconds);
-
-        return result;
-    }
-
     public async Task<CreateVoucherHeaderResponse> CreateVoucherHeaderAsync(
         CreateVoucherHeaderRequest request)
     {
@@ -69,7 +30,6 @@ public class VoucherRepository : IVoucherRepository
 
         var parameters = new DynamicParameters();
 
-        parameters.Add("@UploadFileId", request.UploadFileId);
         parameters.Add("@VoucherBatchCode", request.VoucherBatchCode);
         parameters.Add("@ProductId", request.ProductId);
         parameters.Add("@VoucherValue", request.VoucherValue);
@@ -78,9 +38,8 @@ public class VoucherRepository : IVoucherRepository
         parameters.Add("@CreatedBy", request.CreatedBy);
 
         _logger.LogInformation(
-            "Database Started. StoredProcedure={StoredProcedure}. UploadFileId={UploadFileId}. ProductId={ProductId}. Quantity={Quantity}",
+            "Database Started. StoredProcedure={StoredProcedure}. ProductId={ProductId}. Quantity={Quantity}",
             storedProcedure,
-            request.UploadFileId,
             request.ProductId,
             request.Quantity);
 
@@ -153,50 +112,6 @@ public class VoucherRepository : IVoucherRepository
             stopwatch.ElapsedMilliseconds);
 
         return result.TotalInserted;
-    }
-
-    public async Task UpdateUploadFileResultAsync(
-        int uploadFileId,
-        int totalRecords,
-        int successRecords,
-        int failedRecords,
-        string response,
-        string updatedBy)
-    {
-        const string storedProcedure = "trs.spUploadFile_UpdateResult";
-
-        using var connection = _context.CreateConnection();
-
-        var stopwatch = Stopwatch.StartNew();
-
-        var parameters = new DynamicParameters();
-
-        parameters.Add("@UploadFileId", uploadFileId);
-        parameters.Add("@TotalRecords", totalRecords);
-        parameters.Add("@SuccessRecords", successRecords);
-        parameters.Add("@FailedRecords", failedRecords);
-        parameters.Add("@Response", response);
-        parameters.Add("@UpdatedBy", updatedBy);
-
-        _logger.LogInformation(
-            "Database Started. StoredProcedure={StoredProcedure}. UploadFileId={UploadFileId}. TotalRecords={TotalRecords}. SuccessRecords={SuccessRecords}. FailedRecords={FailedRecords}",
-            storedProcedure,
-            uploadFileId,
-            totalRecords,
-            successRecords,
-            failedRecords);
-
-        await connection.ExecuteAsync(
-            storedProcedure,
-            parameters,
-            commandType: CommandType.StoredProcedure);
-
-        stopwatch.Stop();
-
-        _logger.LogInformation(
-            "Database Completed. StoredProcedure={StoredProcedure}. Elapsed={ElapsedMilliseconds}ms",
-            storedProcedure,
-            stopwatch.ElapsedMilliseconds);
     }
 
     public async Task MarkVoucherHeaderProcessedAsync(int voucherHeaderId, string updatedBy)

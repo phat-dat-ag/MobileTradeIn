@@ -153,18 +153,6 @@ public class UploadVoucherHandler
 
     private async Task UpdateImportResultAsync(UploadVoucherCommand request, int importedCount)
     {
-        await _repository.UpdateUploadFileResultAsync(
-            request.UploadField,
-            request.Vouchers.Count,
-            importedCount,
-            request.Vouchers.Count - importedCount,
-            "Voucher import completed successfully.",
-            request.UploadedBy);
-
-        _logger.LogInformation(
-            "Business Step Completed. Step={Step}",
-            "UpdateUploadFileResult");
-
         await _repository.MarkVoucherHeaderProcessedAsync(
             request.VoucherHeaderId,
             request.UploadedBy);

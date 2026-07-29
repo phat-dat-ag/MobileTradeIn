@@ -35,7 +35,6 @@ public class CreateVoucherHeaderHandler
         var result = await _repository.CreateVoucherHeaderAsync(
             new CreateVoucherHeaderRequest
             {
-                UploadFileId = request.UploadFileId,
                 VoucherBatchCode = request.VoucherBatchCode,
                 ProductId = request.ProductId,
                 VoucherValue = request.VoucherValue,

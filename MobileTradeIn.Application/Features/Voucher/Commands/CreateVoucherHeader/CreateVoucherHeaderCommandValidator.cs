@@ -7,10 +7,6 @@ public class CreateVoucherHeaderCommandValidator
 {
     public CreateVoucherHeaderCommandValidator()
     {
-        RuleFor(x => x.UploadFileId)
-            .GreaterThan(0)
-            .WithMessage("UploadFileId must be greater than 0.");
-
         RuleFor(x => x.VoucherBatchCode)
             .NotEmpty()
             .WithMessage("VoucherBatchCode is required.")
