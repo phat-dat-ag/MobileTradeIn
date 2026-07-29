@@ -29,15 +29,9 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowVoucherHeaderNotFoundException_WhenHeaderDoesNotExist()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = new List<VoucherImportDto>
-            {
-                VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
-            }
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand([
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
+        ]);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -54,12 +48,7 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowNoVoucherException_WhenVoucherListIsEmpty()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = new List<VoucherImportDto>()
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(new List<VoucherImportDto>());
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -76,15 +65,9 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowVoucherCountMismatch_WhenQuantityDoesNotMatch()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand([
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
+        ]);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -101,16 +84,10 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowDuplicateVoucherCodesException_WhenDuplicateCodesExist()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
-                VoucherImportDtoFactory.CreateVoucherImportDto("vc001")
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand([
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
+            VoucherImportDtoFactory.CreateVoucherImportDto("vc001")
+        ]);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -127,16 +104,10 @@ public class UploadVoucherCsvHandlerTests
     [Fact]
     public async Task Handle_ShouldThrowExistingVoucherCodeException_WhenVoucherAlreadyExists()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
-                VoucherImportDtoFactory.CreateVoucherImportDto("VC002")
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand([
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC002")
+        ]);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -170,12 +141,7 @@ public class UploadVoucherCsvHandlerTests
             VoucherImportDtoFactory.CreateVoucherImportDto("VC002")
         };
 
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = vouchers
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(vouchers);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
@@ -220,12 +186,7 @@ public class UploadVoucherCsvHandlerTests
             .Select(i => VoucherImportDtoFactory.CreateVoucherImportDto($"VC{i:0000}"))
             .ToList();
 
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = vouchers
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(vouchers);
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))

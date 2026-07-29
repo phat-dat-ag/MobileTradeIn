@@ -1,6 +1,6 @@
 ﻿using FluentValidation.Results;
-using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucher;
+using MobileTradeIn.Tests.Common.Factories.Voucher;
 
 namespace MobileTradeIn.Tests.Application.Features.Voucher.Commands.UploadVoucher;
 
@@ -11,15 +11,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldPass_WhenCommandIsValid()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                new VoucherImportDto()
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(1, "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -29,15 +21,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVoucherHeaderIdIsLessThanOrEqualToZero()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 0,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                new VoucherImportDto()
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(0, "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -49,15 +33,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenUploadedByIsEmpty()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = string.Empty,
-            Vouchers =
-            [
-                new VoucherImportDto()
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(1, string.Empty);
 
         ValidationResult result = _validator.Validate(command);
 
@@ -69,15 +45,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenUploadedByExceedsMaximumLength()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = new string('A', 101),
-            Vouchers =
-            [
-                new VoucherImportDto()
-            ]
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(1, new string('A', 101));
 
         ValidationResult result = _validator.Validate(command);
 
@@ -89,12 +57,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVouchersIsNull()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = null!
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand(null!);
 
         ValidationResult result = _validator.Validate(command);
 
@@ -106,12 +69,7 @@ public class UploadVoucherCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVouchersIsEmpty()
     {
-        var command = new UploadVoucherCommand
-        {
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers = []
-        };
+        var command = UploadVoucherCommandFactory.CreateUploadVoucherCommand([]);
 
         ValidationResult result = _validator.Validate(command);
 
