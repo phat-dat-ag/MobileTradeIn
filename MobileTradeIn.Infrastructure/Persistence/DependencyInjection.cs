@@ -24,6 +24,8 @@ public static class DependencyInjection
 
         services.AddScoped<IFileReader, CsvFileReader>();
 
+        services.AddScoped<IFileValidator, FileValidator>();
+
         services.AddScoped<IEmailTemplateRepository, EmailTemplateRepository>();
 
         services.AddScoped<IEmailTemplateService, EmailTemplateService>();

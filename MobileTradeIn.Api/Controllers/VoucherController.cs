@@ -15,12 +15,18 @@ public class VoucherController : BaseController
     private readonly IMediator _mediator;
     private readonly ILogger<VoucherController> _logger;
     private readonly IEnumerable<IFileReader> _fileReaders;
+    private readonly IFileValidator _fileValidator;
 
-    public VoucherController(IMediator mediator, IEnumerable<IFileReader> fileReaders, ILogger<VoucherController> logger)
+    public VoucherController(
+        IMediator mediator,
+        IEnumerable<IFileReader> fileReaders,
+        ILogger<VoucherController> logger,
+        IFileValidator fileValidator)
     {
         _mediator = mediator;
         _fileReaders = fileReaders;
         _logger = logger;
+        _fileValidator = fileValidator;
     }
 
     [HttpPost("header")]
@@ -49,6 +55,8 @@ public class VoucherController : BaseController
             "API Started. Operation={Operation}. VoucherHeaderId={VoucherHeaderId}",
             "UploadVoucher",
             headerId);
+
+        _fileValidator.ValidateFileName(request.File.FileName);
 
         var extension = Path.GetExtension(request.File.FileName);
 
