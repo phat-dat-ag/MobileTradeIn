@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTradeIn;
 
@@ -10,12 +11,7 @@ public class ConfirmTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldPass_WhenCommandIsValid()
     {
-        var command = new ConfirmTradeInCommand
-        {
-            TradeInOfferId = 1,
-            ConfirmedBy = "admin",
-            Notes = "Approved"
-        };
+        var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -25,11 +21,7 @@ public class ConfirmTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenTradeInOfferIdIsLessThanOrEqualToZero()
     {
-        var command = new ConfirmTradeInCommand
-        {
-            TradeInOfferId = 0,
-            ConfirmedBy = "admin"
-        };
+        var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(0, "admin", "Approved");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -41,11 +33,7 @@ public class ConfirmTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenConfirmedByIsEmpty()
     {
-        var command = new ConfirmTradeInCommand
-        {
-            TradeInOfferId = 1,
-            ConfirmedBy = string.Empty
-        };
+        var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, string.Empty, "Approved");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -57,11 +45,7 @@ public class ConfirmTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenConfirmedByExceedsMaximumLength()
     {
-        var command = new ConfirmTradeInCommand
-        {
-            TradeInOfferId = 1,
-            ConfirmedBy = new string('A', 101)
-        };
+        var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, new string('A', 101), "Approved");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -73,12 +57,7 @@ public class ConfirmTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenNotesExceedMaximumLength()
     {
-        var command = new ConfirmTradeInCommand
-        {
-            TradeInOfferId = 1,
-            ConfirmedBy = "admin",
-            Notes = new string('A', 501)
-        };
+        var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", new string('A', 501));
 
         ValidationResult result = _validator.Validate(command);
 

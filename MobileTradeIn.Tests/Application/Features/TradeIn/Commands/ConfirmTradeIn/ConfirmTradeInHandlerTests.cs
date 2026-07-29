@@ -5,6 +5,7 @@ using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTradeIn
@@ -38,11 +39,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         [Fact]
         public async Task Handle_Should_ConfirmTradeIn_And_SendEmail()
         {
-            var command = new ConfirmTradeInCommand
-            {
-                TradeInOfferId = 1,
-                ConfirmedBy = "DAT"
-            };
+            var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
             var emailInfo = new TradeInEmailDto
             {
@@ -113,11 +110,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         [Fact]
         public async Task Handle_Should_Throw_When_EmailInfo_NotFound()
         {
-            var command = new ConfirmTradeInCommand
-            {
-                TradeInOfferId = 1,
-                ConfirmedBy = "DAT"
-            };
+            var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
             _repositoryMock
                 .Setup(x => x.ConfirmTradeInAsync(It.IsAny<ConfirmTradeInRequest>()))
@@ -141,11 +134,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         [Fact]
         public async Task Handle_Should_Throw_When_EmailTemplate_NotFound()
         {
-            var command = new ConfirmTradeInCommand
-            {
-                TradeInOfferId = 1,
-                ConfirmedBy = "DAT"
-            };
+            var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
             _repositoryMock
                 .Setup(x => x.ConfirmTradeInAsync(It.IsAny<ConfirmTradeInRequest>()))
@@ -173,11 +162,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         [Fact]
         public async Task Handle_Should_NotThrow_When_SendEmail_Fails()
         {
-            var command = new ConfirmTradeInCommand
-            {
-                TradeInOfferId = 1,
-                ConfirmedBy = "DAT"
-            };
+            var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
             var template = new EmailTemplateDto
             {
