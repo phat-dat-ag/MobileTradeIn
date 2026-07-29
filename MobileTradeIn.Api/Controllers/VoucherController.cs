@@ -85,7 +85,6 @@ public class VoucherController : BaseController
         var result = await _mediator.Send(
             new UploadVoucherCommand
             {
-                UploadField = request.UploadFileId,
                 VoucherHeaderId = headerId,
                 UploadedBy = request.UploadedBy,
                 Vouchers = vouchers

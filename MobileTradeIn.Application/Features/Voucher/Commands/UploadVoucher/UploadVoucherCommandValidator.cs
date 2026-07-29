@@ -7,10 +7,6 @@ public class UploadVoucherCommandValidator
 {
     public UploadVoucherCommandValidator()
     {
-        RuleFor(x => x.UploadField)
-            .GreaterThan(0)
-            .WithMessage("UploadField must be greater than 0.");
-
         RuleFor(x => x.VoucherHeaderId)
             .GreaterThan(0)
             .WithMessage("VoucherHeaderId must be greater than 0.");

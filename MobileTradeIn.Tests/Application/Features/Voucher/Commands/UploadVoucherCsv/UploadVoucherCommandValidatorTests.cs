@@ -13,7 +13,6 @@ public class UploadVoucherCommandValidatorTests
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 1,
             UploadedBy = "admin",
             Vouchers =
@@ -28,32 +27,10 @@ public class UploadVoucherCommandValidatorTests
     }
 
     [Fact]
-    public void Validate_ShouldFail_WhenUploadFieldIsLessThanOrEqualToZero()
-    {
-        var command = new UploadVoucherCommand
-        {
-            UploadField = 0,
-            VoucherHeaderId = 1,
-            UploadedBy = "admin",
-            Vouchers =
-            [
-                new VoucherImportDto()
-            ]
-        };
-
-        ValidationResult result = _validator.Validate(command);
-
-        Assert.False(result.IsValid);
-        Assert.Contains(result.Errors,
-            e => e.PropertyName == nameof(command.UploadField));
-    }
-
-    [Fact]
     public void Validate_ShouldFail_WhenVoucherHeaderIdIsLessThanOrEqualToZero()
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 0,
             UploadedBy = "admin",
             Vouchers =
@@ -74,7 +51,6 @@ public class UploadVoucherCommandValidatorTests
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 1,
             UploadedBy = string.Empty,
             Vouchers =
@@ -95,7 +71,6 @@ public class UploadVoucherCommandValidatorTests
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 1,
             UploadedBy = new string('A', 101),
             Vouchers =
@@ -116,7 +91,6 @@ public class UploadVoucherCommandValidatorTests
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 1,
             UploadedBy = "admin",
             Vouchers = null!
@@ -134,7 +108,6 @@ public class UploadVoucherCommandValidatorTests
     {
         var command = new UploadVoucherCommand
         {
-            UploadField = 1,
             VoucherHeaderId = 1,
             UploadedBy = "admin",
             Vouchers = []

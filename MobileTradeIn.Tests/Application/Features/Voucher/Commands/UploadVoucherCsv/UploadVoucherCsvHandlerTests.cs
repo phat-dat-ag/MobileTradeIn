@@ -44,7 +44,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers = new List<VoucherImportDto>
             {
@@ -70,7 +69,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers = new List<VoucherImportDto>()
         };
@@ -93,7 +91,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers =
             [
@@ -119,7 +116,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers =
             [
@@ -146,7 +142,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers =
             [
@@ -190,7 +185,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers = vouchers
         };
@@ -241,7 +235,6 @@ public class UploadVoucherCsvHandlerTests
         var command = new UploadVoucherCommand
         {
             VoucherHeaderId = 1,
-            UploadField = 1,
             UploadedBy = "admin",
             Vouchers = vouchers
         };
