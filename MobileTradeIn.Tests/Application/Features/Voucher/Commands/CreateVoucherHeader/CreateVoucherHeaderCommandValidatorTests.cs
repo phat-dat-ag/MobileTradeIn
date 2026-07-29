@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using MobileTradeIn.Application.Features.Voucher.Commands.CreateVoucherHeader;
+using MobileTradeIn.Tests.Common.Factories.Voucher;
 
 namespace MobileTradeIn.Tests.Application.Features.Voucher.Commands.CreateVoucherHeader;
 
@@ -10,15 +11,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldPass_WhenCommandIsValid()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            Description = "Voucher batch",
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+            "BATCH001", 1, 100000, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -28,14 +22,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVoucherBatchCodeIsEmpty()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = string.Empty,
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           string.Empty, 1, 100000, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -47,14 +35,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVoucherBatchCodeExceedsMaximumLength()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = new string('A', 101),
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           new string('A', 101), 1, 100000, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -66,14 +48,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenProductIdIsLessThanOrEqualToZero()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 0,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           "BATCH001", 0, 100000, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -85,14 +61,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVoucherValueIsLessThanOrEqualToZero()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 0,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           "BATCH001", 1, 0, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -104,14 +74,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenVoucherValueIsNotWholeNumber()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000.5m,
-            Quantity = 100,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           "BATCH001", 1, 100000.5m, 100, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -123,14 +87,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenQuantityIsLessThanOrEqualToZero()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 0,
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           "BATCH001", 1, 100000, 0, "Voucher batch", "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -142,15 +100,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenDescriptionExceedsMaximumLength()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            Description = new string('A', 501),
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+           "BATCH001", 1, 100000, 100, new string('A', 501), "admin");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -162,14 +113,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenCreatedByIsEmpty()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = string.Empty
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+            "BATCH001", 1, 100000, 100, "hehe", string.Empty);
 
         ValidationResult result = _validator.Validate(command);
 
@@ -181,14 +126,8 @@ public class CreateVoucherHeaderCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenCreatedByExceedsMaximumLength()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 1,
-            VoucherValue = 100000,
-            Quantity = 100,
-            CreatedBy = new string('A', 101)
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+            "BATCH001", 1, 100000, 100, "hehe", new string('A', 101));
 
         ValidationResult result = _validator.Validate(command);
 

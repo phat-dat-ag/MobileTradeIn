@@ -2,6 +2,7 @@
 using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Features.Voucher.Commands.CreateVoucherHeader;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using MobileTradeIn.Tests.Common.Factories.Voucher;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.Voucher.Commands.CreateVoucherHeader;
@@ -25,15 +26,8 @@ public class CreateVoucherHeaderHandlerTests
     [Fact]
     public async Task Handle_ShouldCreateVoucherHeaderSuccessfully()
     {
-        var command = new CreateVoucherHeaderCommand
-        {
-            VoucherBatchCode = "BATCH001",
-            ProductId = 10,
-            VoucherValue = 500000,
-            Quantity = 100,
-            Description = "Voucher batch for iPhone",
-            CreatedBy = "admin"
-        };
+        var command = CreateVoucherHeaderCommandFactory.CreateCreateVoucherHeaderCommand(
+            "BATCH001", 10, 500000, 100, "Voucher batch", "admin");
 
         var response = new CreateVoucherHeaderResponse
         {
