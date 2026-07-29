@@ -52,11 +52,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = 0
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, 0));
 
         await Assert.ThrowsAsync<NoVoucherException>(
             () => _handler.Handle(command, CancellationToken.None));
@@ -71,11 +67,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = 5
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, 5));
 
         await Assert.ThrowsAsync<VoucherCountMismatch>(
             () => _handler.Handle(command, CancellationToken.None));
@@ -91,11 +83,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = 2
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, 2));
 
         await Assert.ThrowsAsync<DuplicateVoucherCodesException>(
             () => _handler.Handle(command, CancellationToken.None));
@@ -111,11 +99,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = 2
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, 2));
 
         _repositoryMock
             .Setup(x => x.GetExistingVoucherCodesAsync(It.IsAny<List<string>>()))
@@ -145,11 +129,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = vouchers.Count
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, vouchers.Count));
 
         _repositoryMock
             .Setup(x => x.GetExistingVoucherCodesAsync(It.IsAny<List<string>>()))
@@ -190,11 +170,7 @@ public class UploadVoucherCsvHandlerTests
 
         _repositoryMock
             .Setup(x => x.GetVoucherHeaderAsync(command.VoucherHeaderId))
-            .ReturnsAsync(new VoucherHeaderDto
-            {
-                VoucherHeaderId = 1,
-                Quantity = vouchers.Count
-            });
+            .ReturnsAsync(VoucherHeaderDtoFactory.CreateVoucherHeaderDto(1, vouchers.Count));
 
         _repositoryMock
             .Setup(x => x.GetExistingVoucherCodesAsync(It.IsAny<List<string>>()))
