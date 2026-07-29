@@ -5,6 +5,7 @@ using MobileTradeIn.Application.Common.Exceptions.Validation;
 using MobileTradeIn.Application.DTOs.Voucher;
 using MobileTradeIn.Application.Features.Voucher.Commands.UploadVoucher;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using MobileTradeIn.Tests.Common.Factories.Voucher;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.Voucher.Commands.UploadVoucherCsv;
@@ -25,19 +26,6 @@ public class UploadVoucherCsvHandlerTests
             _loggerMock.Object);
     }
 
-    private static VoucherImportDto CreateVoucher(string code)
-    {
-        return new VoucherImportDto
-        {
-            VoucherCode = code,
-            VoucherHeaderId = 1,
-            StartDate = DateOnly.FromDateTime(DateTime.Today),
-            EndDate = DateOnly.FromDateTime(DateTime.Today.AddMonths(1)),
-            IsActive = true,
-            CreatedBy = "admin"
-        };
-    }
-
     [Fact]
     public async Task Handle_ShouldThrowVoucherHeaderNotFoundException_WhenHeaderDoesNotExist()
     {
@@ -47,7 +35,7 @@ public class UploadVoucherCsvHandlerTests
             UploadedBy = "admin",
             Vouchers = new List<VoucherImportDto>
             {
-                CreateVoucher("VC001")
+                VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
             }
         };
 
@@ -94,7 +82,7 @@ public class UploadVoucherCsvHandlerTests
             UploadedBy = "admin",
             Vouchers =
             [
-                CreateVoucher("VC001")
+                VoucherImportDtoFactory.CreateVoucherImportDto("VC001")
             ]
         };
 
@@ -119,8 +107,8 @@ public class UploadVoucherCsvHandlerTests
             UploadedBy = "admin",
             Vouchers =
             [
-                CreateVoucher("VC001"),
-                CreateVoucher("vc001")
+                VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
+                VoucherImportDtoFactory.CreateVoucherImportDto("vc001")
             ]
         };
 
@@ -145,8 +133,8 @@ public class UploadVoucherCsvHandlerTests
             UploadedBy = "admin",
             Vouchers =
             [
-                CreateVoucher("VC001"),
-                CreateVoucher("VC002")
+                VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
+                VoucherImportDtoFactory.CreateVoucherImportDto("VC002")
             ]
         };
 
@@ -178,8 +166,8 @@ public class UploadVoucherCsvHandlerTests
     {
         var vouchers = new List<VoucherImportDto>
         {
-            CreateVoucher("VC001"),
-            CreateVoucher("VC002")
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC001"),
+            VoucherImportDtoFactory.CreateVoucherImportDto("VC002")
         };
 
         var command = new UploadVoucherCommand
@@ -229,7 +217,7 @@ public class UploadVoucherCsvHandlerTests
     public async Task Handle_ShouldImportInMultipleChunks_WhenVoucherCountGreaterThan500()
     {
         var vouchers = Enumerable.Range(1, 1001)
-            .Select(i => CreateVoucher($"VC{i:0000}"))
+            .Select(i => VoucherImportDtoFactory.CreateVoucherImportDto($"VC{i:0000}"))
             .ToList();
 
         var command = new UploadVoucherCommand
