@@ -3,6 +3,7 @@ using MobileTradeIn.Application.Common.Exceptions.Validation;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Commands.CreateTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.CreateTradeIn;
@@ -29,22 +30,10 @@ public class CreateTradeInHandlerTests
     public async Task Handle_Should_CreateTradeIn_When_RequestIsValid()
     {
 
-        var command = new CreateTradeInCommand
-        {
-            CustomerId = 1,
-            ProductId = 1,
-            DeviceCondition = "GOOD",
-            IMEI = "123456789",
-            VoucherCode = null,
-            CreatedBy = "DAT"
-        };
+        var command = CreateTradeInCommandFactory.CreateCreateTradeInCommand(
+            1, 1, "GOOD", "123456789012345", null!, "admin");
 
-        var response = new CreateTradeInResponse
-        {
-            TradeInRequestId = 1,
-            TradeInOfferId = 1,
-            OfferAmount = 10000000
-        };
+        var response = CreateTradeInResponseFactory.CreateCreateTradeInResponse();
 
         _repositoryMock
             .Setup(x => x.CreateTradeInAsync(It.IsAny<CreateTradeInRequest>()))
@@ -66,13 +55,8 @@ public class CreateTradeInHandlerTests
     [Fact]
     public async Task Handle_Should_ThrowInvalidDeviceConditionException_When_DeviceCondition_Invalid()
     {
-        var command = new CreateTradeInCommand
-        {
-            CustomerId = 1,
-            ProductId = 1,
-            DeviceCondition = "ABC",
-            CreatedBy = "DAT"
-        };
+        var command = CreateTradeInCommandFactory.CreateCreateTradeInCommand(
+            1, 1, "ABC", "123456789012345", "VOUCHER01", "admin");
 
         await Assert.ThrowsAsync<InvalidDeviceConditionException>(() =>
             _handler.Handle(command, CancellationToken.None));
@@ -85,14 +69,8 @@ public class CreateTradeInHandlerTests
     [Fact]
     public async Task Handle_Should_ThrowInvalidVoucherCodeException_When_VoucherCode_IsWhiteSpace()
     {
-        var command = new CreateTradeInCommand
-        {
-            CustomerId = 1,
-            ProductId = 1,
-            DeviceCondition = "GOOD",
-            VoucherCode = "   ",
-            CreatedBy = "DAT"
-        };
+        var command = CreateTradeInCommandFactory.CreateCreateTradeInCommand(
+            1, 1, "GOOD", "123456789012345", "       ", "admin");
 
         await Assert.ThrowsAsync<InvalidVoucherCodeException>(() =>
             _handler.Handle(command, CancellationToken.None));
@@ -109,17 +87,12 @@ public class CreateTradeInHandlerTests
     [InlineData("POOR")]
     public async Task Handle_Should_Accept_All_Valid_DeviceConditions(string condition)
     {
-        var command = new CreateTradeInCommand
-        {
-            CustomerId = 1,
-            ProductId = 1,
-            DeviceCondition = condition,
-            CreatedBy = "DAT"
-        };
+        var command = CreateTradeInCommandFactory.CreateCreateTradeInCommand(
+            1, 1, condition, "123456789012345", "VOUCHER01", "admin");
 
         _repositoryMock
             .Setup(x => x.CreateTradeInAsync(It.IsAny<CreateTradeInRequest>()))
-            .ReturnsAsync(new CreateTradeInResponse());
+            .ReturnsAsync(CreateTradeInResponseFactory.CreateCreateTradeInResponse());
 
         await _handler.Handle(command, CancellationToken.None);
 
