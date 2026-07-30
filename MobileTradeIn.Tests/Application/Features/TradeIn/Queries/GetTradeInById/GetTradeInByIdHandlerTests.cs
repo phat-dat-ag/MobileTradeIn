@@ -27,16 +27,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInByI
         {
             var command = GetTradeInByIdQueryFactory.CreateGetTradeInByIdQuery(1);
 
-            var response = new TradeInDto
-            {
-                TradeInOfferId = 1,
-                OfferAmount = 100000,
-                IMEI = "1111111111",
-                OfferDate = DateTime.Now,
-                VoucherCode = "CODE",
-                OriginalAmount = 90000,
-                VoucherAmount = 10000,
-            };
+            var response = TradeInDtoFactory.CreateTradeInDto();
 
             _repositoryMock.Setup(x => x.GetTradeInByIdAsync(It.IsAny<int>())).ReturnsAsync(response);
 
