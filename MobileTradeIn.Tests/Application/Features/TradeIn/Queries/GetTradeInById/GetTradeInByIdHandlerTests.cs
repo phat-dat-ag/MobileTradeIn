@@ -3,6 +3,7 @@ using MobileTradeIn.Application.Common.Exceptions.NotFound;
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Queries.GetTradeInById;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInById
@@ -24,10 +25,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInByI
         [Fact]
         public async Task Handle_Should_GetTradeInById_When_RequestIsValid()
         {
-            var command = new GetTradeInByIdQuery
-            {
-                TradeInOfferId = 1,
-            };
+            var command = GetTradeInByIdQueryFactory.CreateGetTradeInByIdQuery(1);
 
             var response = new TradeInDto
             {
@@ -54,10 +52,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInByI
         [Fact]
         public async Task Handle_Should_ThrowTradeInNotFoundException_When_TradeInNotFound()
         {
-            var command = new GetTradeInByIdQuery
-            {
-                TradeInOfferId = 1,
-            };
+            var command = GetTradeInByIdQueryFactory.CreateGetTradeInByIdQuery(0);
 
             await Assert.ThrowsAsync<TradeInNotFoundException>(() =>
                 _handler.Handle(command, CancellationToken.None));

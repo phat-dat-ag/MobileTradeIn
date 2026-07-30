@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using MobileTradeIn.Application.Features.TradeIn.Queries.GetTradeInById;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Queries.GetTradeInById;
 
@@ -10,10 +11,7 @@ public class GetTradeInByIdQueryValidatorTests
     [Fact]
     public void Validate_ShouldPass_WhenTradeInOfferIdIsValid()
     {
-        var query = new GetTradeInByIdQuery
-        {
-            TradeInOfferId = 1
-        };
+        var query = GetTradeInByIdQueryFactory.CreateGetTradeInByIdQuery(1);
 
         ValidationResult result = _validator.Validate(query);
 
@@ -23,10 +21,7 @@ public class GetTradeInByIdQueryValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenTradeInOfferIdIsLessThanOrEqualToZero()
     {
-        var query = new GetTradeInByIdQuery
-        {
-            TradeInOfferId = 0
-        };
+        var query = GetTradeInByIdQueryFactory.CreateGetTradeInByIdQuery(0);
 
         ValidationResult result = _validator.Validate(query);
 
