@@ -2,6 +2,7 @@
 using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Commands.RejectTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 using Moq;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.RejectTradeIn
@@ -27,12 +28,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.RejectTradeI
         public async Task Handle_Should_RejectTradeIn_When_RequestIsValid()
         {
 
-            var command = new RejectTradeInCommand
-            {
-                TradeInOfferId = 1,
-                RejectedBy = "DAT",
-                Notes = "Customer rejected."
-            };
+            var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(1, "DAT", "Customer reject");
 
             _repositoryMock
                 .Setup(x => x.RejectTradeInAsync(It.IsAny<RejectTradeInRequest>()))

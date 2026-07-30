@@ -1,5 +1,6 @@
 ﻿using FluentValidation.Results;
 using MobileTradeIn.Application.Features.TradeIn.Commands.RejectTradeIn;
+using MobileTradeIn.Tests.Common.Factories.TradeIn;
 
 namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.RejectTradeIn;
 
@@ -10,12 +11,7 @@ public class RejectTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldPass_WhenCommandIsValid()
     {
-        var command = new RejectTradeInCommand
-        {
-            TradeInOfferId = 1,
-            RejectedBy = "admin",
-            Notes = "Rejected"
-        };
+        var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(1, "DAT", "Customer reject");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -25,11 +21,7 @@ public class RejectTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenTradeInOfferIdIsLessThanOrEqualToZero()
     {
-        var command = new RejectTradeInCommand
-        {
-            TradeInOfferId = 0,
-            RejectedBy = "admin"
-        };
+        var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(0, "DAT", "Customer reject");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -41,11 +33,7 @@ public class RejectTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenRejectedByIsEmpty()
     {
-        var command = new RejectTradeInCommand
-        {
-            TradeInOfferId = 1,
-            RejectedBy = string.Empty
-        };
+        var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(1, string.Empty, "Customer reject");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -57,11 +45,7 @@ public class RejectTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenRejectedByExceedsMaximumLength()
     {
-        var command = new RejectTradeInCommand
-        {
-            TradeInOfferId = 1,
-            RejectedBy = new string('A', 101)
-        };
+        var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(1, new string('A', 101), "Customer reject");
 
         ValidationResult result = _validator.Validate(command);
 
@@ -73,12 +57,7 @@ public class RejectTradeInCommandValidatorTests
     [Fact]
     public void Validate_ShouldFail_WhenNotesExceedMaximumLength()
     {
-        var command = new RejectTradeInCommand
-        {
-            TradeInOfferId = 1,
-            RejectedBy = "admin",
-            Notes = new string('A', 501)
-        };
+        var command = RejectTradeInCommandFactory.CreateRejectTradeInCommand(1, "DAT", new string('A', 501));
 
         ValidationResult result = _validator.Validate(command);
 
