@@ -5,6 +5,7 @@ using MobileTradeIn.Application.DTOs.TradeIn;
 using MobileTradeIn.Application.Features.TradeIn.Commands.ConfirmTradeIn;
 using MobileTradeIn.Application.Interfaces.Repositories;
 using MobileTradeIn.Application.Interfaces.Services;
+using MobileTradeIn.Tests.Common.Factories.Email;
 using MobileTradeIn.Tests.Common.Factories.TradeIn;
 using Moq;
 
@@ -41,20 +42,9 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         {
             var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
-            var emailInfo = new TradeInEmailDto
-            {
-                CustomerName = "Nguyen Van A",
-                CustomerEmail = "test@gmail.com",
-                ProductName = "iPhone 15",
-                OfferAmount = 10000000,
-                TransactionNumber = "TRX0001"
-            };
+            var emailInfo = TradeInEmailDtoFactory.CreateTradeInEmailDto();
 
-            var template = new EmailTemplateDto
-            {
-                Subject = "Approved",
-                Content = "Hello {{CustomerName}}"
-            };
+            var template = EmailTemplateDtoFactory.CreateEmailTemplateDto("Approved", "Hello {{CustomerName}}");
 
             _repositoryMock
                 .Setup(x => x.ConfirmTradeInAsync(It.IsAny<ConfirmTradeInRequest>()))
@@ -142,7 +132,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
 
             _repositoryMock
                 .Setup(x => x.GetTradeInEmailAsync(command.TradeInOfferId))
-                .ReturnsAsync(new TradeInEmailDto());
+                .ReturnsAsync(TradeInEmailDtoFactory.CreateTradeInEmailDto());
 
             _emailTemplateRepositoryMock
                 .Setup(x => x.GetEmailTemplateByTemplateCodeAsync("TRADEIN_APPROVED"))
@@ -164,11 +154,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
         {
             var command = ConfirmTradeInCommandFactory.CreateConfirmTradeInCommand(1, "admin", "Approved");
 
-            var template = new EmailTemplateDto
-            {
-                Subject = "Approved",
-                Content = "Content"
-            };
+            var template = EmailTemplateDtoFactory.CreateEmailTemplateDto("Approved", "Content");
 
             _repositoryMock
                 .Setup(x => x.ConfirmTradeInAsync(It.IsAny<ConfirmTradeInRequest>()))
@@ -176,10 +162,7 @@ namespace MobileTradeIn.Tests.Application.Features.TradeIn.Commands.ConfirmTrade
 
             _repositoryMock
                 .Setup(x => x.GetTradeInEmailAsync(It.IsAny<int>()))
-                .ReturnsAsync(new TradeInEmailDto
-                {
-                    CustomerEmail = "test@gmail.com"
-                });
+                .ReturnsAsync(TradeInEmailDtoFactory.CreateTradeInEmailDto());
 
             _emailTemplateRepositoryMock
                 .Setup(x => x.GetEmailTemplateByTemplateCodeAsync(It.IsAny<string>()))
